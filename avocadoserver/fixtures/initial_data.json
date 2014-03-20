@@ -1,0 +1,46 @@
+[
+    {"pk": "1",
+     "model": "avocadoserver.jobstatus",
+     "fields": {"name": "queued",
+		"description": "Job is waiting be executed"}},
+
+    {"pk": "2",
+     "model": "avocadoserver.jobstatus",
+     "fields": {"name": "running",
+		"description": "Job is currently being executed"}},
+
+    {"pk": "3",
+     "model": "avocadoserver.jobstatus",
+     "fields": {"name": "completed",
+		"description": "Job finished running"}},
+
+    {"pk": "4",
+     "model": "avocadoserver.jobstatus",
+     "fields": {"name": "aborted",
+		"description": "Job was removed from queue before completion"}},
+
+    {"pk": "1",
+     "model": "avocadoserver.jobpriority",
+     "fields": {"name": "low",
+		"description": "Low priority",
+		"priority": 1}},
+
+    {"pk": "2",
+     "model": "avocadoserver.jobpriority",
+     "fields": {"name": "medium",
+		"description": "Medium priority",
+		"priority": 2}},
+
+    {"pk": "3",
+     "model": "avocadoserver.jobpriority",
+     "fields": {"name": "high",
+		"description": "High priority",
+		"priority": 3}},
+
+    {"pk": "4",
+     "model": "avocadoserver.jobpriority",
+     "fields": {"name": "urgent",
+		"description": "Urgent priority",
+		"priority": 4}}
+
+]
