@@ -1,5 +1,4 @@
 [
-    // Job statuses map JOB_STATUSES defined in avocado/job.py
     {"pk": "1",
      "model": "avocadoserver.jobstatus",
      "fields": {"name": "TEST_NA",
