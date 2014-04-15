@@ -40,4 +40,4 @@ class Job(models.Model):
     priority = models.ForeignKey(JobPriority, blank=False)
     test = models.ForeignKey(Test, blank=False)
     timeout = models.IntegerField(default=0)
-    status = models.ForeignKey(JobStatus, default=None)
+    status = models.ForeignKey(JobStatus, default=0)
