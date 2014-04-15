@@ -1,23 +1,54 @@
 [
+    // Job statuses map JOB_STATUSES defined in avocado/job.py
     {"pk": "1",
      "model": "avocadoserver.jobstatus",
-     "fields": {"name": "queued",
-		"description": "Job is waiting be executed"}},
+     "fields": {"name": "TEST_NA",
+		"description": ""}},
 
     {"pk": "2",
      "model": "avocadoserver.jobstatus",
-     "fields": {"name": "running",
-		"description": "Job is currently being executed"}},
+     "fields": {"name": "ABORT",
+		"description": "Job was removed from queue before completion"}},
 
     {"pk": "3",
      "model": "avocadoserver.jobstatus",
-     "fields": {"name": "completed",
-		"description": "Job finished running"}},
+     "fields": {"name": "ERROR",
+		"description": ""}},
 
     {"pk": "4",
      "model": "avocadoserver.jobstatus",
-     "fields": {"name": "aborted",
-		"description": "Job was removed from queue before completion"}},
+     "fields": {"name": "FAIL",
+		"description": ""}},
+
+    {"pk": "5",
+     "model": "avocadoserver.jobstatus",
+     "fields": {"name": "WARN",
+		"description": ""}},
+
+    {"pk": "6",
+     "model": "avocadoserver.jobstatus",
+     "fields": {"name": "PASS",
+		"description": "Job finished running successfull"}},
+
+    {"pk": "7",
+     "model": "avocadoserver.jobstatus",
+     "fields": {"name": "START",
+		"description": "Job just started running"}},
+
+    {"pk": "8",
+     "model": "avocadoserver.jobstatus",
+     "fields": {"name": "ALERT",
+		"description": ""}},
+
+    {"pk": "9",
+     "model": "avocadoserver.jobstatus",
+     "fields": {"name": "RUNNING",
+		"description": "Job is currently being executed"}},
+
+    {"pk": "10",
+     "model": "avocadoserver.jobstatus",
+     "fields": {"name": "NOSTATUS",
+		"description": "Job has no recognizable status"}},
 
     {"pk": "1",
      "model": "avocadoserver.jobpriority",
