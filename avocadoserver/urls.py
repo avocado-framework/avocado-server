@@ -10,8 +10,10 @@ router = routers.DefaultRouter()
 router.register(r'labels', views.LabelViewSet)
 router.register(r'hosts', views.HostViewSet)
 router.register(r'tests', views.TestViewSet)
+router.register(r'teststatuses', views.TestStatusViewSet)
 router.register(r'profilers', views.ProfilerViewSet)
 router.register(r'jobs', views.JobViewSet)
+router.register(r'jobstatuses', views.JobStatusViewSet)
 
 urlpatterns = patterns(
     '',
