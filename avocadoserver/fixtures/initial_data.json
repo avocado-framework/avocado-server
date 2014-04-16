@@ -50,6 +50,31 @@
 		"description": "Job has no recognizable status"}},
 
     {"pk": "1",
+     "model": "avocadoserver.teststatus",
+     "fields": {"name": "PASS",
+		"description": "Test succeeded"}},
+
+    {"pk": "2",
+     "model": "avocadoserver.teststatus",
+     "fields": {"name": "ERROR",
+		"description": "Test had an error"}},
+
+    {"pk": "3",
+     "model": "avocadoserver.teststatus",
+     "fields": {"name": "FAIL",
+		"description": "Test failed"}},
+
+    {"pk": "4",
+     "model": "avocadoserver.teststatus",
+     "fields": {"name": "TEST_NA",
+		"description": "Test was skipped"}},
+
+    {"pk": "5",
+     "model": "avocadoserver.teststatus",
+     "fields": {"name": "WARN",
+		"description": "Test generated warnings"}},
+
+    {"pk": "1",
      "model": "avocadoserver.jobpriority",
      "fields": {"name": "low",
 		"description": "Low priority",
