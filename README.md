@@ -24,11 +24,17 @@ First install the following dependencies (`pip install` is your friend):
 Setup
 ~~~~~
 
-Create the database by running:
+Create the initial database by running:
 
-``$ ./manage.py syncdb``
+``$ ./manage.py syncdb -v0 --noinput``
 
-Please create the `admin` user and set a password.
+Now create the superuser (administrator):
+
+``$ ./manage.py createsuperuser --username=admin --email='root@localhost.localdomain' --noinput``
+
+And choose a password:
+
+``$ ./manage.py changepassword admin``
 
 Running
 ~~~~~~~
