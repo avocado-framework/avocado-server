@@ -74,14 +74,29 @@ class TestResult(models.Model):
     def __unicode__(self):
         return self.name
 
-
 class Job(models.Model):
     name = models.CharField(max_length=255, unique=False, blank=False)
+    unique_id = models.CharField(max_length=36, unique=True, blank=False)
     priority = models.ForeignKey(JobPriority, blank=False)
     timeout = models.IntegerField(default=0)
     status = models.ForeignKey(JobStatus, default=0)
 
-    test_results = models.ManyToManyField(TestResult, blank=True)
-
     def __unicode__(self):
         return self.name
+
+class JobActivity(models.Model):
+    job = models.ForeignKey(Job, related_name='activities')
+    activity = models.CharField(max_length=20, blank=False)
+    time = models.DateTimeField()
+
+    class Meta:
+        unique_together = ('job', 'activity', 'time')
+
+class TestActivity(models.Model):
+    job = models.ForeignKey(Job, related_name='test_activities')
+    test_tag = models.CharField(max_length=255, blank=False)
+    activity = models.CharField(max_length=20, blank=False)
+    time = models.DateTimeField()
+
+    def __unicode__(self):
+        return "%s %s at %s" % (self.test_tag, self.activity, self.time)
