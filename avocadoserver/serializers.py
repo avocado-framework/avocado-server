@@ -33,25 +33,34 @@ class ProfilerSerializer(serializers.HyperlinkedModelSerializer):
         model = models.Profiler
         fields = ('name', 'description', 'url')
 
-
 class TestStatusSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.TestStatus
         fields = ('name', 'description')
-
 
 class JobStatusSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.JobStatus
         fields = ('name', 'description')
 
+class JobActivitySerializer(serializers.ModelSerializer):
+     class Meta:
+         model = models.JobActivity
+         fields = ('activity', 'time')
+
+class TestActivitySerializer(serializers.ModelSerializer):
+     class Meta:
+         model = models.TestActivity
+         fields = ('test_tag', 'activity', 'time')
 
 class JobSerializer(serializers.HyperlinkedModelSerializer):
 
     priority = serializers.SlugRelatedField(slug_field='name')
     status = serializers.SlugRelatedField(slug_field='name', read_only=True)
+    activities = JobActivitySerializer(many=True)
+    test_activities = TestActivitySerializer(many=True)
 
     class Meta:
         model = models.Job
-        fields = ('name', 'priority', 'timeout', 'status')
-
+        fields = ('name', 'unique_id', 'priority', 'timeout', 'status',
+                  'activities', 'test_activities')
