@@ -57,8 +57,8 @@ class JobSerializer(serializers.HyperlinkedModelSerializer):
 
     priority = serializers.SlugRelatedField(slug_field='name')
     status = serializers.SlugRelatedField(slug_field='name', read_only=True)
-    activities = JobActivitySerializer(many=True)
-    test_activities = TestActivitySerializer(many=True)
+    activities = JobActivitySerializer(many=True, read_only=True)
+    test_activities = TestActivitySerializer(many=True, read_only=True)
 
     class Meta:
         model = models.Job
