@@ -1,5 +1,43 @@
 from django.db import models
 
+class ReadOnlyModel(models.Model):
+    """
+    Model that doesn't allow saving or deleting objects
+
+    Should be used for constant like definitions that are exposed to the
+    world but should never be modified except in the code itself.
+    """
+    def save(self, *args, **kwargs):
+        return
+
+    def delete(self):
+        return
+
+    class Meta:
+        abstract = True
+
+class JobStatus(ReadOnlyModel):
+    name = models.CharField(max_length=255, unique=True, blank=False)
+    description = models.TextField(blank=True)
+
+    def __unicode__(self):
+        return self.name
+
+class JobPriority(ReadOnlyModel):
+    name = models.CharField(max_length=255, unique=True, blank=False)
+    description = models.TextField(blank=True)
+    priority = models.SmallIntegerField(unique=True, blank=False)
+
+    def __unicode__(self):
+        return self.name
+
+class TestStatus(ReadOnlyModel):
+    name = models.CharField(max_length=255, unique=True, blank=False)
+    description = models.TextField(blank=True)
+
+    def __unicode__(self):
+        return self.name
+
 class Label(models.Model):
     """
     Tag that marks different types of objects, including hosts, users and tests
@@ -41,30 +79,6 @@ class Profiler(models.Model):
 
     def __unicode__(self):
         return self.name
-
-class JobStatus(models.Model):
-    name = models.CharField(max_length=255, unique=True, blank=False)
-    description = models.TextField(blank=True)
-
-    def __unicode__(self):
-        return self.name
-
-class JobPriority(models.Model):
-    name = models.CharField(max_length=255, unique=True, blank=False)
-    description = models.TextField(blank=True)
-    priority = models.SmallIntegerField(unique=True, blank=False)
-
-    def __unicode__(self):
-        return self.name
-
-
-class TestStatus(models.Model):
-    name = models.CharField(max_length=255, unique=True, blank=False)
-    description = models.TextField(blank=True)
-
-    def __unicode__(self):
-        return self.name
-
 
 class TestResult(models.Model):
     name = models.CharField(max_length=255, blank=False)
