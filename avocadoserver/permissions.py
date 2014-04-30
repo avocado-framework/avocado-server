@@ -14,7 +14,9 @@
 
 from rest_framework import permissions
 
+
 class ReadOnlyPermission(permissions.BasePermission):
+
     """
     Allows read-only operations from both authenticated and anonymous users
     """
