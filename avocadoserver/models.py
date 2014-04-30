@@ -92,6 +92,10 @@ class TestActivity(models.Model):
     test_tag = models.CharField(max_length=255, blank=False)
     activity = models.CharField(max_length=20, blank=False)
     time = models.DateTimeField()
+    status = models.ForeignKey(TestStatus, null=True, blank=True)
 
     def __unicode__(self):
         return "%s %s at %s" % (self.test_tag, self.activity, self.time)
+
+    class Meta:
+        unique_together = ('job', 'test_tag', 'activity', 'time', 'status')

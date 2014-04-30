@@ -38,11 +38,26 @@ class JobActivitySerializer(serializers.ModelSerializer):
         fields = ('job', 'activity', 'time')
 
 
+class TestStatusSerializerField(serializers.RelatedField):
+
+    def from_native(self, data):
+        try:
+            obj = models.TestStatus.objects.get(name=data)
+        except models.TestStatus.DoesNotExist:
+            obj = None
+        return obj
+
+    def to_native(self, value):
+        return "%s" % value.name
+
+
 class TestActivitySerializer(serializers.ModelSerializer):
+
+    status = TestStatusSerializerField(read_only=False, required=False)
 
     class Meta:
         model = models.TestActivity
-        fields = ('test_tag', 'activity', 'time')
+        fields = ('job', 'test_tag', 'activity', 'time', 'status')
 
 
 class JobPrioritySerializerField(serializers.RelatedField):
