@@ -43,3 +43,13 @@ class JobViewSet(viewsets.ModelViewSet):
         else:
             return Response(job_activity.errors,
                             status=status.HTTP_400_BAD_REQUEST)
+
+    @action(methods=['POST'])
+    def test_activity(self, request, pk=None):
+        test_activity = serializers.TestActivitySerializer(data=request.DATA)
+        if test_activity.is_valid():
+            test_activity.save()
+            return Response({'status': 'test activity added'})
+        else:
+            return Response(test_activity.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
