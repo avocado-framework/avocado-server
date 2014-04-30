@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 
 class ReadOnlyModel(models.Model):
@@ -89,14 +91,42 @@ class TestResult(models.Model):
         return self.name
 
 class Job(models.Model):
+
+    DEFAULT_PRIORITY = 'MEDIUM'
+    DEFAULT_TIMEOUT = 600
+    INITIAL_STATUS = 'NOSTATUS'
+
     name = models.CharField(max_length=255, unique=False, blank=False)
     unique_id = models.CharField(max_length=36, unique=True, blank=False)
     priority = models.ForeignKey(JobPriority, blank=False)
     timeout = models.IntegerField(default=0)
     status = models.ForeignKey(JobStatus, default=0)
 
+    @classmethod
+    def create(cls, name, unique_id=None, priority=DEFAULT_PRIORITY,
+               timeout=DEFAULT_TIMEOUT, status=INITIAL_STATUS):
+
+        if unique_id is None:
+            unique_id = str(uuid.uuid4())
+
+        try:
+            priority_obj = JobPriority.objects.get(name=priority)
+        except JobPriority.DoesNotExist:
+            priority_obj = JobPriority.objects.get(name=DEFAULT_PRIORITY)
+
+        try:
+            status_obj = JobStatus.objects.get(name=status)
+        except JobStatus.DoesNotExist:
+            status_obj = JobStatus.objects.get(name=INITIAL_STATUS)
+
+        return cls(name=name,
+                   unique_id=unique_id,
+                   priority=priority_obj,
+                   timeout=timeout,
+                   status=status_obj)
+
     def __unicode__(self):
-        return self.name
+        return "%s (%s)" % (self.name, self.unique_id)
 
 class JobActivity(models.Model):
     job = models.ForeignKey(Job, related_name='activities')
