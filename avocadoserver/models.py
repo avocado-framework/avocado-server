@@ -2,6 +2,11 @@ import uuid
 
 from django.db import models
 
+
+def generate_uuid():
+    return str(uuid.uuid4())
+
+
 class ReadOnlyModel(models.Model):
     """
     Model that doesn't allow saving or deleting objects
@@ -27,8 +32,8 @@ class JobStatus(ReadOnlyModel):
 
 class JobPriority(ReadOnlyModel):
     name = models.CharField(max_length=255, unique=True, blank=False)
-    description = models.TextField(blank=True)
     priority = models.SmallIntegerField(unique=True, blank=False)
+    description = models.TextField(blank=True)
 
     def __unicode__(self):
         return self.name
@@ -40,93 +45,17 @@ class TestStatus(ReadOnlyModel):
     def __unicode__(self):
         return self.name
 
-class Label(models.Model):
-    """
-    Tag that marks different types of objects, including hosts, users and tests
-    """
-    name = models.CharField(max_length=255, unique=True, blank=False)
-
-    def __unicode__(self):
-        return self.name
-
-class Host(models.Model):
-    """
-    Machine that is capable of running a test job
-    """
-    name = models.CharField(max_length=255, unique=True, blank=False)
-
-    #: Host is not supposed to receive new jobs, could be under mantainance or
-    #: under some other manual interaction
-    locked = models.BooleanField(default=False)
-
-    labels = models.ManyToManyField(Label, blank=True)
-
-    def __unicode__(self):
-        return self.name
-
-class Test(models.Model):
-    """
-    A test server knows about and that can be run on a Host as part of a Job
-    """
-    name = models.CharField(max_length=255, unique=True, blank=False)
-    description = models.TextField(blank=True)
-    url = models.CharField(max_length=255, unique=True, blank=False)
-    def __unicode__(self):
-        return self.name
-
-class Profiler(models.Model):
-    name = models.CharField(max_length=255, unique=True, blank=False)
-    description = models.TextField(blank=True)
-    url = models.CharField(max_length=255, unique=True, blank=False)
-
-    def __unicode__(self):
-        return self.name
-
-class TestResult(models.Model):
-    name = models.CharField(max_length=255, blank=False)
-    tag = models.CharField(max_length=255, blank=False)
-    status = models.ForeignKey(TestStatus, default=0)
-
-    def __unicode__(self):
-        return self.name
-
 class Job(models.Model):
 
-    DEFAULT_PRIORITY = 'MEDIUM'
-    DEFAULT_TIMEOUT = 600
-    INITIAL_STATUS = 'NOSTATUS'
-
     name = models.CharField(max_length=255, unique=False, blank=False)
-    unique_id = models.CharField(max_length=36, unique=True, blank=False)
-    priority = models.ForeignKey(JobPriority, blank=False)
+    uniqueident = models.CharField(max_length=36, unique=True, blank=False,
+                                   default=generate_uuid)
     timeout = models.IntegerField(default=0)
-    status = models.ForeignKey(JobStatus, default=0)
-
-    @classmethod
-    def create(cls, name, unique_id=None, priority=DEFAULT_PRIORITY,
-               timeout=DEFAULT_TIMEOUT, status=INITIAL_STATUS):
-
-        if unique_id is None:
-            unique_id = str(uuid.uuid4())
-
-        try:
-            priority_obj = JobPriority.objects.get(name=priority)
-        except JobPriority.DoesNotExist:
-            priority_obj = JobPriority.objects.get(name=DEFAULT_PRIORITY)
-
-        try:
-            status_obj = JobStatus.objects.get(name=status)
-        except JobStatus.DoesNotExist:
-            status_obj = JobStatus.objects.get(name=INITIAL_STATUS)
-
-        return cls(name=name,
-                   unique_id=unique_id,
-                   priority=priority_obj,
-                   timeout=timeout,
-                   status=status_obj)
+    priority = models.ForeignKey(JobPriority, null=True, blank=True)
+    status = models.ForeignKey(JobStatus, null=True, blank=True)
 
     def __unicode__(self):
-        return "%s (%s)" % (self.name, self.unique_id)
+        return "%s (%s)" % (self.name, self.uniqueident)
 
 class JobActivity(models.Model):
     job = models.ForeignKey(Job, related_name='activities')
