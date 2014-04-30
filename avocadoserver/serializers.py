@@ -35,7 +35,7 @@ class JobActivitySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.JobActivity
-        fields = ('activity', 'time')
+        fields = ('job', 'activity', 'time')
 
 
 class TestActivitySerializer(serializers.ModelSerializer):
