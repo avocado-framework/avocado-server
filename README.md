@@ -44,3 +44,8 @@ Run:
 ``$ ./manage.py runserver``
 
 Now open your browser at the given address, log in with your recently created credentials and explore the API.
+
+For the impatient (or developer)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A script named ``reset-and-run.sh`` collects the manual commands listed earlier. It also resets (deletes) the database file, so be careful!
