@@ -1,5 +1,12 @@
-GNU GENERAL PUBLIC LICENSE
-                       Version 2, June 1991
+avocado-server is released specifically under the GPLv2, and not any
+later version of the license, unless explicitly otherwise stated
+
+All files in the avocado-server project are covered by the GPLv2, unless
+explicitly otherwise stated.
+
+
+                   GNU GENERAL PUBLIC LICENSE
+                      Version 2, June 1991
 
  Copyright (C) 1989, 1991 Free Software Foundation, Inc., <http://fsf.org/>
  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
