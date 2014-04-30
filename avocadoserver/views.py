@@ -13,7 +13,9 @@
 # Author: Cleber Rosa <cleber@redhat.com>
 
 from avocadoserver import models, serializers, permissions
-from rest_framework import viewsets
+from rest_framework import viewsets, status
+from rest_framework.response import Response
+from rest_framework.decorators import action
 
 
 class TestStatusViewSet(viewsets.ReadOnlyModelViewSet):
@@ -31,3 +33,13 @@ class JobStatusViewSet(viewsets.ReadOnlyModelViewSet):
 class JobViewSet(viewsets.ModelViewSet):
     queryset = models.Job.objects.all()
     serializer_class = serializers.JobSerializer
+
+    @action(methods=['POST'])
+    def activity(self, request, pk=None):
+        job_activity = serializers.JobActivitySerializer(data=request.DATA)
+        if job_activity.is_valid():
+            job_activity.save()
+            return Response({'status': 'job activity added'})
+        else:
+            return Response(job_activity.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
