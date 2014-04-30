@@ -76,25 +76,25 @@
 
     {"pk": "1",
      "model": "avocadoserver.jobpriority",
-     "fields": {"name": "low",
+     "fields": {"name": "LOW",
 		"description": "Low priority",
 		"priority": 1}},
 
     {"pk": "2",
      "model": "avocadoserver.jobpriority",
-     "fields": {"name": "medium",
+     "fields": {"name": "MEDIUM",
 		"description": "Medium priority",
 		"priority": 2}},
 
     {"pk": "3",
      "model": "avocadoserver.jobpriority",
-     "fields": {"name": "high",
+     "fields": {"name": "HIGH",
 		"description": "High priority",
 		"priority": 3}},
 
     {"pk": "4",
      "model": "avocadoserver.jobpriority",
-     "fields": {"name": "urgent",
+     "fields": {"name": "URGENT",
 		"description": "Urgent priority",
 		"priority": 4}}
 
