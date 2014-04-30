@@ -11,4 +11,3 @@
 #
 # Red Hat, Inc.
 # Cleber Rosa <cleber@redhat.com>
-

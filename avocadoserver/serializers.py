@@ -27,14 +27,14 @@ class TestStatusSerializer(serializers.ModelSerializer):
         fields = ('name', 'description')
 
 class JobActivitySerializer(serializers.ModelSerializer):
-     class Meta:
-         model = models.JobActivity
-         fields = ('activity', 'time')
+    class Meta:
+        model = models.JobActivity
+        fields = ('activity', 'time')
 
 class TestActivitySerializer(serializers.ModelSerializer):
-     class Meta:
-         model = models.TestActivity
-         fields = ('test_tag', 'activity', 'time')
+    class Meta:
+        model = models.TestActivity
+        fields = ('test_tag', 'activity', 'time')
 
 class JobPrioritySerializerField(serializers.RelatedField):
     def from_native(self, data):
