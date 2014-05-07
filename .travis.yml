@@ -1,0 +1,16 @@
+language: python
+python:
+    - "2.7"
+
+branches:
+    only:
+        - master
+
+install:
+    - pip install sphinx tox simplejson pylint autopep8
+    - pip install inspektor
+    - pip install -r requirements.txt
+
+script:
+    - inspekt lint
+    - inspekt style
