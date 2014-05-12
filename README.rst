@@ -24,24 +24,24 @@ First install the following dependencies (`pip install` is your friend):
 Setup
 ~~~~~
 
-Create the initial database by running:
+Create the initial database by running::
 
-``$ ./manage.py syncdb -v0 --noinput``
+$ ./manage.py syncdb -v0 --noinput
 
-Now create the superuser (administrator):
+Now create the superuser (administrator)::
 
-``$ ./manage.py createsuperuser --username=admin --email='root@localhost.localdomain' --noinput``
+$ ./manage.py createsuperuser --username=admin --email='root@localhost.localdomain' --noinput
 
-And choose a password:
+And choose a password::
 
-``$ ./manage.py changepassword admin``
+$ ./manage.py changepassword admin
 
 Running
 ~~~~~~~
 
-Run:
+Run::
 
-``$ ./manage.py runserver``
+$ ./manage.py runserver
 
 Now open your browser at the given address, log in with your recently created credentials and explore the API.
 
