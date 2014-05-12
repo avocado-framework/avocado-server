@@ -1,6 +1,6 @@
 #!/bin/bash
 if [ -f avocadoserver.sqlite ]; then rm avocadoserver.sqlite; fi;
-./manage.py syncdb -v0 --noinput
-./manage.py createsuperuser --username=admin --email='root@localhost.localdomain' --noinput
-./manage.py changepassword admin
-./manage.py runserver
+./scripts/avocado-server-manage syncdb -v0 --noinput
+./scripts/avocado-server-manage createsuperuser --username=admin --email='root@localhost.localdomain' --noinput
+./scripts/avocado-server-manage changepassword admin
+./scripts/avocado-server-manage runserver
