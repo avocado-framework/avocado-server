@@ -67,7 +67,7 @@ class TestStatus(ReadOnlyModel):
 
 class Job(models.Model):
 
-    name = models.CharField(max_length=255, unique=False, blank=False)
+    name = models.CharField(max_length=255, unique=False, blank=True, null=True)
     uniqueident = models.CharField(max_length=36, unique=True, blank=False,
                                    default=generate_uuid)
     timeout = models.IntegerField(default=0)
