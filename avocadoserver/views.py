@@ -36,6 +36,7 @@ class JobViewSet(viewsets.ModelViewSet):
 
     @action(methods=['POST'])
     def activity(self, request, pk=None):
+        # pylint: disable=E1123
         job_activity = serializers.JobActivitySerializer(data=request.DATA)
         if job_activity.is_valid():
             job_activity.save()
@@ -46,6 +47,7 @@ class JobViewSet(viewsets.ModelViewSet):
 
     @action(methods=['POST'])
     def test_activity(self, request, pk=None):
+        # pylint: disable=E1123
         test_activity = serializers.TestActivitySerializer(data=request.DATA)
         if test_activity.is_valid():
             test_activity.save()

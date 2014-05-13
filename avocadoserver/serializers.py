@@ -92,6 +92,7 @@ class JobSerializer(serializers.ModelSerializer):
     priority = JobPrioritySerializerField(read_only=False, required=False)
     status = JobStatusSerializerField(read_only=False, required=False)
 
+    # pylint: disable=E1123
     activities = JobActivitySerializer(many=True, read_only=True)
     test_activities = TestActivitySerializer(many=True, read_only=True)
 
