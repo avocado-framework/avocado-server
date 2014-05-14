@@ -18,8 +18,10 @@
 import os
 import sys
 import unittest
+import datetime
 
 import django.db
+from django.utils.timezone import utc
 
 # simple magic for using scripts within a source tree
 basedir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -100,6 +102,48 @@ class ModelsUnitests(unittest.TestCase):
         job_1 = models.Job.objects.create(name='same')
         job_2 = models.Job.objects.create(name='same')
         self.assertEquals(job_1.name, job_2.name)
+
+    def test_job_activity(self):
+        '''
+        Adds job activity to an existing job
+        '''
+        job = models.Job.objects.create(name='job with activities')
+        now = datetime.datetime.utcnow().replace(tzinfo=utc)
+        job_setup = models.JobActivity.objects.create(job=job,
+                                                      activity='setup',
+                                                      time=now)
+        now = datetime.datetime.utcnow().replace(tzinfo=utc)
+        job_cleanup = models.JobActivity.objects.create(job=job,
+                                                        activity='cleanup',
+                                                        time=now)
+
+    def test_job_same_activity(self):
+        '''
+        Attempts to add the same activity to the same job
+        '''
+        job = models.Job.objects.create(name='job with activities')
+        now = datetime.datetime.utcnow().replace(tzinfo=utc)
+        job_setup = models.JobActivity.objects.create(job=job,
+                                                      activity='setup',
+                                                      time=now)
+        self.assertRaises(django.db.IntegrityError,
+                          models.JobActivity.objects.create,
+                          job=job, activity='setup', time=now)
+
+    def test_job_add_test_activity(self):
+        job = models.Job.objects.create(name='job with test activities')
+        now = datetime.datetime.utcnow().replace(tzinfo=utc)
+        test_setup_start = models.TestActivity.objects.create(
+            job=job,
+            test_tag='test.1',
+            activity='SETUP_START',
+            time=now)
+        now = datetime.datetime.utcnow().replace(tzinfo=utc)
+        test_setup_end = models.TestActivity(
+            job=job,
+            test_tag='test.1',
+            activity='SETUP_END',
+            time=now)
 
 
 if __name__ == '__main__':
