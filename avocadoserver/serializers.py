@@ -57,7 +57,7 @@ class TestActivitySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.TestActivity
-        fields = ('job', 'test_tag', 'activity', 'time', 'status')
+        fields = ('test', 'activity', 'time', 'status')
 
 
 class JobPrioritySerializerField(serializers.RelatedField):
