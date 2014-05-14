@@ -26,4 +26,5 @@ setup(name='avocadoserver',
       author_email='cleber@redhat.com',
       url='http://github.com/avocadoframework/avocado-server',
       packages=['avocadoserver', ],
+      package_data={'avocadoserver': ['fixtures/initial_data.json']},
       scripts=['scripts/avocado-server-manage'])
