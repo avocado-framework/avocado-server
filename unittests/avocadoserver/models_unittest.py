@@ -132,18 +132,33 @@ class ModelsUnitests(unittest.TestCase):
 
     def test_job_add_test_activity(self):
         job = models.Job.objects.create(name='job with test activities')
+        test = models.Test.objects.create(job=job,
+                                          tag='test.1')
         now = datetime.datetime.utcnow().replace(tzinfo=utc)
         test_setup_start = models.TestActivity.objects.create(
-            job=job,
-            test_tag='test.1',
+            test=test,
             activity='SETUP_START',
             time=now)
         now = datetime.datetime.utcnow().replace(tzinfo=utc)
         test_setup_end = models.TestActivity(
-            job=job,
-            test_tag='test.1',
+            test=test,
             activity='SETUP_END',
             time=now)
+
+    def test_job_test_data(self):
+        job = models.Job.objects.create(name='job with test data')
+        test = models.Test.objects.create(job=job,
+                                          tag='test.2')
+        now = datetime.datetime.utcnow().replace(tzinfo=utc)
+        test_data = models.TestData.objects.create(
+            test=test,
+            category='sysinfo',
+            key='cmdline',
+            value=('BOOT_IMAGE=/vmlinuz-3.14.3-200.fc20.x86_64 '
+                   'root=/dev/mapper/vg_x220-f19root ro rd.md=0 rd.dm=0 '
+                   'vconsole.keymap=us rd.lvm.lv=vg_x220/f19root rd.luks=0'
+                   'vconsole.font=latarcyrheb-sun16 rd.lvm.lv=vg_x220/swap '
+                   'rhgb quiet LANG=en_US.UTF-8'))
 
 
 if __name__ == '__main__':
