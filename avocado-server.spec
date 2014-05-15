@@ -29,7 +29,7 @@ running on other machines, consolidates various job and test results, etc.
 %{__python2} setup.py install --root %{buildroot} --skip-build
 
 %files
-%doc README.md LICENSE
+%doc README.rst LICENSE
 %{python_sitelib}/%{pymodulename}
 %{python_sitelib}/%{pymodulename}-*.egg-info
 %{_bindir}/avocado-server-manage
