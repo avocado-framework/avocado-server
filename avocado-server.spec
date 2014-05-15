@@ -1,5 +1,5 @@
 %global pymodulename avocadoserver
-%global commit 
+%global commit d077c15fb1543d8c16ed90f5c7d0c7d837c6fead
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 
 Summary: REST based interface for applications to communicate with the avocado test server
