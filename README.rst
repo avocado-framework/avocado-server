@@ -26,22 +26,22 @@ Setup
 
 Create the initial database by running::
 
-$ ./manage.py syncdb -v0 --noinput
+$ ./scripts/avocado-server-manage syncdb -v0 --noinput
 
 Now create the superuser (administrator)::
 
-$ ./manage.py createsuperuser --username=admin --email='root@localhost.localdomain' --noinput
+$ ./scripts/avocado-server-manage createsuperuser --username=admin --email='root@localhost.localdomain' --noinput
 
 And choose a password::
 
-$ ./manage.py changepassword admin
+$ ./scripts/avocado-server-manage changepassword admin
 
 Running
 ~~~~~~~
 
 Run::
 
-$ ./manage.py runserver
+$ ./scripts/avocado-server-manage runserver
 
 Now open your browser at the given address, log in with your recently created credentials and explore the API.
 
