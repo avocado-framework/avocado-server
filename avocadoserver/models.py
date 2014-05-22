@@ -87,7 +87,7 @@ class JobActivity(models.Model):
 
 
 class Test(models.Model):
-    job = models.ForeignKey(Job, related_name='test_activities')
+    job = models.ForeignKey(Job, related_name='tests')
     tag = models.CharField(max_length=255, blank=False)
     status = models.ForeignKey(TestStatus, null=True, blank=True)
 

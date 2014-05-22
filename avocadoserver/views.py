@@ -55,3 +55,8 @@ class JobViewSet(viewsets.ModelViewSet):
         else:
             return Response(test_activity.errors,
                             status=status.HTTP_400_BAD_REQUEST)
+
+
+class TestViewSet(viewsets.ModelViewSet):
+    queryset = models.Test.objects.all()
+    serializer_class = serializers.TestSerializer
