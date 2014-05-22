@@ -20,6 +20,7 @@ router = routers.DefaultRouter()
 router.register(r'jobstatuses', views.JobStatusViewSet)
 router.register(r'teststatuses', views.TestStatusViewSet)
 router.register(r'jobs', views.JobViewSet)
+router.register(r'tests', views.TestViewSet)
 
 urlpatterns = patterns(
     '',
