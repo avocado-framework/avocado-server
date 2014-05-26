@@ -6,3 +6,4 @@ tox==1.5.0
 virtualenv==1.9.1
 django==1.6.3
 djangorestframework==2.3.13
+gunicorn==18.0
