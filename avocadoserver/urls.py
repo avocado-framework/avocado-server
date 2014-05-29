@@ -24,9 +24,13 @@ router.register(r'jobs', views.JobViewSet)
 jobs_router = routers.NestedSimpleRouter(router, r'jobs', lookup='job')
 jobs_router.register(r'tests', views.TestViewSet)
 
+tests_router = routers.NestedSimpleRouter(jobs_router, 'tests', lookup='test')
+
+
 urlpatterns = patterns(
     '',
     url(r'^', include(router.urls)),
     url(r'^', include(jobs_router.urls)),
+    url(r'^', include(tests_router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 )
