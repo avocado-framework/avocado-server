@@ -236,3 +236,33 @@ Now you can see all that happenned to test 1, part of job 1, by GETting `/jobs/1
     {"test": 1, "activity": "TEST_STARTED", "time": "2013-05-02T05:00:01Z", "status": null},
     {"test": 1, "activity": "TEST_ENDED", "time": "2013-05-02T05:00:04Z", "status": "FAIL"}]
    }
+
+
+/jobs/<id>/tests/<id>/data/
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Tests also generate data that usually needs to be preserved. The avocado server uses a free form approach to test data. Each test data should be marked with a given `category`, which is also free form.
+
+One example: the avocado test runner includes the `sysinfo` plugin, which gathers some useful information about the system where the test is running on. That data is usually small, and wouldn't hurt to be loaded to the database itself. To do that, we could run::
+
+   $ curl -u admin:123 -H "Content-Type: application/json" \
+     -d '{"category": "sysinfo",
+          "key": "cmdline",
+          "value": "BOOT_IMAGE=/vmlinuz-3.14.3-200.fc20.x86_64 root=/dev/mapper/vg_x220-f19root ro rd.md=0 rd.dm=0 vconsole.keymap=us rd.lvm.lv=vg_x220/f19root rd.luks=0 vconsole.font=latarcyrheb-sun16 rd.lvm.lv=vg_x220/swap rhgb quiet LANG=en_US.UTF-8"}' \
+     http://localhost:9405/jobs/1/tests/1/data/
+
+And get::
+
+   {"status": "test data added"}
+
+But for large log files, which are best kept on the filesystem, we may simply record their relative path::
+
+   $ curl -u admin:123 -H "Content-Type: application/json" \
+     -d '{"category": "log_file_path",
+          "key": "debug.log",
+          "value": ""}' \
+     http://localhost:9405/jobs/1/tests/1/data/
+
+And get::
+
+   {"status": "test data added"}

@@ -167,3 +167,23 @@ class TestActivityViewSet(viewsets.ModelViewSet):
 
         test_activity.save()
         return Response({'status': 'test activity added'})
+
+
+class TestDataViewSet(viewsets.ModelViewSet):
+    queryset = models.TestData.objects.all()
+    serializer_class = serializers.TestDataSerializer
+
+    def create(self, request, job_pk, test_pk):
+        try:
+            test = models.Test.objects.get(pk=test_pk)
+        except models.Test.DoesNotExist:
+            raise Http404
+
+        test_data = models.TestData.objects.create(
+            test=test,
+            category=request.DATA.get('category', 'default'),
+            key=request.DATA['key'],
+            value=request.DATA['value'])
+
+        test_data.save()
+        return Response({'status': 'test data added'})

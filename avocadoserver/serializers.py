@@ -97,6 +97,13 @@ class TestActivitySerializer(serializers.ModelSerializer):
         fields = ('test', 'activity', 'time', 'status')
 
 
+class TestDataSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.TestData
+        fields = ('test', 'category', 'key', 'value')
+
+
 class TestStatusSerializerField(serializers.RelatedField):
 
     def from_native(self, data):
