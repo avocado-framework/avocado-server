@@ -18,8 +18,10 @@
 import os
 import sys
 import unittest
+import datetime
 
 import django.db
+from django.utils.timezone import utc
 
 # simple magic for using scripts within a source tree
 basedir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -100,6 +102,63 @@ class ModelsUnitests(unittest.TestCase):
         job_1 = models.Job.objects.create(name='same')
         job_2 = models.Job.objects.create(name='same')
         self.assertEquals(job_1.name, job_2.name)
+
+    def test_job_activity(self):
+        '''
+        Adds job activity to an existing job
+        '''
+        job = models.Job.objects.create(name='job with activities')
+        now = datetime.datetime.utcnow().replace(tzinfo=utc)
+        job_setup = models.JobActivity.objects.create(job=job,
+                                                      activity='setup',
+                                                      time=now)
+        now = datetime.datetime.utcnow().replace(tzinfo=utc)
+        job_cleanup = models.JobActivity.objects.create(job=job,
+                                                        activity='cleanup',
+                                                        time=now)
+
+    def test_job_same_activity(self):
+        '''
+        Attempts to add the same activity to the same job
+        '''
+        job = models.Job.objects.create(name='job with activities')
+        now = datetime.datetime.utcnow().replace(tzinfo=utc)
+        job_setup = models.JobActivity.objects.create(job=job,
+                                                      activity='setup',
+                                                      time=now)
+        self.assertRaises(django.db.IntegrityError,
+                          models.JobActivity.objects.create,
+                          job=job, activity='setup', time=now)
+
+    def test_job_add_test_activity(self):
+        job = models.Job.objects.create(name='job with test activities')
+        test = models.Test.objects.create(job=job,
+                                          tag='test.1')
+        now = datetime.datetime.utcnow().replace(tzinfo=utc)
+        test_setup_start = models.TestActivity.objects.create(
+            test=test,
+            activity='SETUP_START',
+            time=now)
+        now = datetime.datetime.utcnow().replace(tzinfo=utc)
+        test_setup_end = models.TestActivity(
+            test=test,
+            activity='SETUP_END',
+            time=now)
+
+    def test_job_test_data(self):
+        job = models.Job.objects.create(name='job with test data')
+        test = models.Test.objects.create(job=job,
+                                          tag='test.2')
+        now = datetime.datetime.utcnow().replace(tzinfo=utc)
+        test_data = models.TestData.objects.create(
+            test=test,
+            category='sysinfo',
+            key='cmdline',
+            value=('BOOT_IMAGE=/vmlinuz-3.14.3-200.fc20.x86_64 '
+                   'root=/dev/mapper/vg_x220-f19root ro rd.md=0 rd.dm=0 '
+                   'vconsole.keymap=us rd.lvm.lv=vg_x220/f19root rd.luks=0'
+                   'vconsole.font=latarcyrheb-sun16 rd.lvm.lv=vg_x220/swap '
+                   'rhgb quiet LANG=en_US.UTF-8'))
 
 
 if __name__ == '__main__':

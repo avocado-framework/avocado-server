@@ -13,9 +13,10 @@
 # Author: Cleber Rosa <cleber@redhat.com>
 
 from avocadoserver import models, serializers, permissions
+from django.http import Http404
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from rest_framework.decorators import action
+from rest_framework.decorators import action, link
 
 
 class TestStatusViewSet(viewsets.ReadOnlyModelViewSet):
@@ -33,6 +34,48 @@ class JobStatusViewSet(viewsets.ReadOnlyModelViewSet):
 class JobViewSet(viewsets.ModelViewSet):
     queryset = models.Job.objects.all()
     serializer_class = serializers.JobSerializer
+
+    def retrieve(self, request, pk):
+        self.object = self.get_object(pk)
+        serializer = self.get_serializer(self.object)
+        return Response(serializer.data)
+
+    def get_object(self, pk):
+        if models.Job.UNIQUEIDENT_RE.match(pk):
+            return self.get_object_by_uniqueident(pk)
+        else:
+            return self.get_object_by_pk(pk)
+        return self.object
+
+    def get_object_by_pk(self, pk):
+        try:
+            return models.Job.objects.get(pk=pk)
+        except models.Job.DoesNotExist:
+            raise Http404
+
+    def get_object_by_uniqueident(self, uniqueident):
+        try:
+            return models.Job.objects.get(uniqueident=uniqueident)
+        except models.Job.DoesNotExist:
+            raise Http404
+
+    @link()
+    def testcount(self, request, pk):
+        test_count = models.Test.objects.filter(job_id=pk).count()
+        return Response({'testcount': test_count})
+
+    @link()
+    def passrate(self, request, pk):
+        test_count = models.Test.objects.filter(job_id=pk).count()
+        if test_count == 0:
+            return Response({'passrate': 0})
+
+        test_status_success = models.TestStatus.objects.get(name='PASS')
+        test_count_pass = models.Test.objects.filter(job_id=pk,
+                                                     status=test_status_success).count()
+
+        rate = round((float(test_count_pass) / float(test_count)) * 100, 2)
+        return Response({'passrate': rate})
 
     @action(methods=['POST'])
     def activity(self, request, pk=None):
@@ -55,3 +98,93 @@ class JobViewSet(viewsets.ModelViewSet):
         else:
             return Response(test_activity.errors,
                             status=status.HTTP_400_BAD_REQUEST)
+
+
+class JobActivityViewSet(viewsets.ModelViewSet):
+    queryset = models.JobActivity.objects.all()
+    serializer_class = serializers.JobActivitySerializer
+
+    def create(self, request, job_pk):
+        try:
+            job = models.Job.objects.get(pk=job_pk)
+        except models.Job.DoesNotExist:
+            raise Http404
+
+        job_activity = models.JobActivity.objects.create(
+            job=job,
+            activity=request.DATA['activity'],
+            time=request.DATA['time'])
+
+        job_activity.save()
+        return Response({'status': 'job activity added'})
+
+
+class TestViewSet(viewsets.ModelViewSet):
+    queryset = models.Test.objects.all()
+    serializer_class = serializers.TestSerializer
+
+    def create(self, request, job_pk):
+        try:
+            job = models.Job.objects.get(pk=job_pk)
+        except models.Job.DoesNotExist:
+            raise Http404
+
+        try:
+            teststatus = models.TestStatus.objects.get(name=request.DATA['status'])
+        except models.TestStatus.DoesNotExist:
+            raise Http404
+
+        test = models.Test.objects.create(job=job,
+                                          status=teststatus,
+                                          tag=request.DATA['tag'])
+        test.save()
+        return Response({'status': 'test added'})
+
+
+class TestActivityViewSet(viewsets.ModelViewSet):
+    queryset = models.TestActivity.objects.all()
+    serializer_class = serializers.TestActivitySerializer
+
+    def create(self, request, job_pk, test_pk):
+        try:
+            test = models.Test.objects.get(pk=test_pk)
+        except models.Test.DoesNotExist:
+            raise Http404
+
+        status_name = request.DATA.get('status', None)
+        if status_name is not None:
+            try:
+                status = models.TestStatus.objects.get(name=status_name)
+            except models.TestStatus.DoesNotExist:
+                raise Http404
+        else:
+            status = None
+
+        test_activity = models.TestActivity.objects.create(
+            test=test,
+            activity=request.DATA['activity'],
+            time=request.DATA['time'],
+            status=status)
+
+        test_activity.save()
+        return Response({'status': 'test activity added'})
+
+
+class TestDataViewSet(viewsets.ModelViewSet):
+    queryset = models.TestData.objects.all()
+    serializer_class = serializers.TestDataSerializer
+
+    def create(self, request, job_pk, test_pk):
+        try:
+            test = models.Test.objects.get(pk=test_pk)
+        except models.Test.DoesNotExist:
+            raise Http404
+
+        test_data = models.TestData.objects.create(
+            test=test,
+            category=request.DATA.get('category', 'default'),
+            key=request.DATA['key'],
+            value=request.DATA['value'])
+
+        test_data.save()
+        return Response({'status': 'test data added'})

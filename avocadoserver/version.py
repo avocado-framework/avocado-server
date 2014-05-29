@@ -9,7 +9,7 @@
 #
 # See LICENSE for more details.
 #
-# Copyright (c) 2014 Red Hat
+# Copyright: Red Hat Inc. 2014
 # Author: Cleber Rosa <cleber@redhat.com>
 
 __all__ = ['MAJOR', 'MINOR', 'RELEASE', 'VERSION']
