@@ -99,6 +99,7 @@ class JobViewSet(viewsets.ModelViewSet):
             return Response(test_activity.errors,
                             status=status.HTTP_400_BAD_REQUEST)
 
+
 class JobActivityViewSet(viewsets.ModelViewSet):
     queryset = models.JobActivity.objects.all()
     serializer_class = serializers.JobActivitySerializer
