@@ -57,8 +57,8 @@ REST API Usage
 
 This is a basic description of the API exposed via REST. All the following subsections have as title the URI suffix they are available at.
 
-jobstatuses
-~~~~~~~~~~~
+jobstatuses/
+~~~~~~~~~~~~
 
 This will list all known job statuses by the avocado server. This can be used by clients, such as the avocado scripts that interact with a server to write appropriate result values.
 
@@ -82,8 +82,8 @@ Sample (beautified) JSON result::
    }
 
 
-teststatuses
-~~~~~~~~~~~~
+teststatuses/
+~~~~~~~~~~~~~
 
 This will list the known test statuses. Please note that a given job can have multiple tests, each one with a different result status.
 
@@ -102,8 +102,8 @@ Sample (beautified) JSON result::
    }
 
 
-jobs
-~~~~
+jobs/
+~~~~~
 
 This presents the view of jobs the server has. Jobs currently are run first on a standalone avocado environment, and then have their results pushed to a server.
 
@@ -119,26 +119,76 @@ Sample (beautified) JSON result::
 
    {"count": 1, "next": null, "previous": null, "results":
       [{"id": 1,
-        "name": "Sleeptest",
+        "name": "Sleep, fail and sync",
         "uniqueident": "5e31e612-f08e-4acf-a1a1-7c53f691546d",
         "timeout": 0,
         "priority": null,
         "status": null,
         "activities": [],
-        "test_activities":
-           [{"job": 1,
-             "test_tag": "sleeptest.1",
-             "activity": "STARTED", "time": "2014-05-15T16:58:01.276Z",
-             "status": null},
-            {"job": 1,
-             "test_tag": "sleeptest.1",
-              "activity": "ENDED", "time": "2014-05-15T16:58:01.297Z",
-              "status": "PASS"}]
+	"tests":
+	   [{"id": 3,
+	     "job": 1,
+	     "tag": "failtest",
+	      "status": "FAIL"},
+
+	    {"id": 1,
+	     "job": 1,
+	     "tag": "sleeptest",
+	     "status": "PASS"},
+
+	    {"id": 2,
+	     "job": 1,
+	     "tag": "synctest",
+	     "status": "PASS"}]
       }]
    }
 
-Here you can see a couple of noteworthy information, including the job internal automatic incremental identification (`1`), its name (`Sleeptest`), its unique identification number (`5e31e612-f08e-4acf-a1a1-7c53f691546d`).
+Here you can see a couple of noteworthy information, including the job internal automatic incremental identification (`1`), its name (`Sleep, fail and sync`), its unique identification number (`5e31e612-f08e-4acf-a1a1-7c53f691546d`).
 
 Under `activities`, there could be a list of records of job events, such as job setup and clean up steps execution.
 
-Under `test_activities`, you can see different activities recorded by the test runner for a given test, including where appropriate, its `status` (or result, if you prefer to think like that).
+Under `tests`, you can see the tests that were recorded as part of this job.
+
+
+jobs/<id>/testcount/
+~~~~~~~~~~~~~~~~~~~~
+
+This is a utility API that returns the number of tests that are part of the given job. Calling `/jobs/1/testcount/` GETs you::
+
+   {"testcount": 3}
+
+It's intended to be as simple as that.
+
+
+jobs/<id>/passrate/
+~~~~~~~~~~~~~~~~~~~
+
+This is another utility API that returns the passrate for the tests that are part of the given job. Calling `/jobs/1/passrate/` GETs you::
+
+   {"passrate": 66.67}
+
+This job has had two tests that PASSed and one that FAILed. The rate gets rounded to two decimal digits.
+
+
+jobs/<id>/tests/
+~~~~~~~~~~~~~~~~
+
+This API accepts receiving test data, that is, POSTing new tests that are part of a given job, and also listing (via GET) the tests of a job. Calling `/jobs/1/tests/` GETs you::
+
+   {"count": 3, "next": null, "previous": null, "results":
+      [{"id": 1, "job": 1, "tag": "sleeptest", "status": "PASS"},
+       {"id": 2, "job": 1, "tag": "synctest", "status": "PASS"},
+       {"id": 3, "job": 1, "tag": "failtest", "status": "FAIL"}]
+   }
+
+To register a new test and its status for a given job you could run::
+
+   curl -u admin:123 -H "Content-Type: application/json" -d '{"tag": "newtest", "status": "PASS"}' http://localhost:9405/jobs/1/tests/
+
+The result will hopefully be::
+
+   {"status": "test added"}
+
+Now you can probably re-check the passrate for the same job by GETting `/jobs/1/passrate`::
+
+   {"passrate": 75.0}
