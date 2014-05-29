@@ -27,6 +27,7 @@ jobs_router.register(r'tests', views.TestViewSet)
 
 tests_router = routers.NestedSimpleRouter(jobs_router, 'tests', lookup='test')
 tests_router.register(r'activities', views.TestActivityViewSet)
+tests_router.register(r'data', views.TestDataViewSet)
 
 urlpatterns = patterns(
     '',
