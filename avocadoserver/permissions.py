@@ -9,8 +9,8 @@
 #
 # See LICENSE for more details.
 #
-# Red Hat, Inc.
-# Cleber Rosa <cleber@redhat.com>
+# Copyright: Red Hat Inc. 2014
+# Author: Cleber Rosa <cleber@redhat.com>
 
 from rest_framework import permissions
 
