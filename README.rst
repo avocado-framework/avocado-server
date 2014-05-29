@@ -20,6 +20,7 @@ First install the following dependencies (`pip install` is your friend):
 
 * django
 * djangorestframework
+* drf-nested-routers
 
 Setup
 ~~~~~
