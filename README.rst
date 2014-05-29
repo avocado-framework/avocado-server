@@ -149,6 +149,20 @@ Under `activities`, there could be a list of records of job events, such as job 
 
 Under `tests`, you can see the tests that were recorded as part of this job.
 
+jobs/<id>/activities/
+~~~~~~~~~~~~~~~~~~~~~
+
+This API accepts receiving job activity data, that is, POSTing new activities, and also listing (via GET) the activities of a job. Calling `/jobs/1/activities/` can GET you::
+
+   {"count": 1, "next": null, "previous": null, "results":
+      [{"job": 1, "activity": "JOB_START", "time": "2013-05-02T04:59:59Z"}]
+
+Later, say that the job finishes running, the server may be updated by a client such as::
+
+   $ curl -u admin:123 -H "Content-Type: application/json" \
+     -d '{"activity": "JOB_FINISHED", "time": "2013-05-02 00:01:01"}' \
+     http://localhost:9405/jobs/1/activities/
+
 
 jobs/<id>/testcount/
 ~~~~~~~~~~~~~~~~~~~~
@@ -193,16 +207,32 @@ Now you can probably re-check the passrate for the same job by GETting `/jobs/1/
 
    {"passrate": 75.0}
 
-jobs/<id>/activities/
-~~~~~~~~~~~~~~~~~~~~~
+jobs/<id>/tests/<id>/activities/
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This API accepts receiving job activity data, that is, POSTing new activities, and also listing (via GET) the activities of a job. Calling `/jobs/1/activities/` can GET you::
-
-   {"count": 1, "next": null, "previous": null, "results":
-      [{"job": 1, "activity": "JOB_START", "time": "2013-05-02T04:59:59Z"}]
-
-Later, say that the job finishes running, the server may be updated by a client such as::
+To add a new activity related to a test::
 
    $ curl -u admin:123 -H "Content-Type: application/json" \
-     -d '{"activity": "JOB_FINISHED", "time": "2013-05-02 00:01:01"}' \
-     http://localhost:9405/jobs/1/activities/
+     -d '{"activity": "TEST_STARTED", "time": "2013-05-02 00:00:01"}' \
+     http://localhost:9405/jobs/1/tests/1/activities/
+
+The result will hopefully be::
+
+   {"status": "test activity added"}
+
+Now suppose that the same test has finished, but FAILed. This could be notified to the server by running::
+
+   $ curl -u admin:123 -H "Content-Type: application/json" \
+     -d '{"activity": "TEST_ENDED", "time": "2013-05-02 00:00:04", "status": "FAIL"}' \
+     http://localhost:9405/jobs/1/tests/1/activities/
+
+The result will hopefully be::
+
+   {"status": "test activity added"}
+
+Now you can see all that happenned to test 1, part of job 1, by GETting `/jobs/1/tests/1/activities/`::
+
+   {"count": 2, "next": null, "previous": null, "results": [
+    {"test": 1, "activity": "TEST_STARTED", "time": "2013-05-02T05:00:01Z", "status": null},
+    {"test": 1, "activity": "TEST_ENDED", "time": "2013-05-02T05:00:04Z", "status": "FAIL"}]
+   }
