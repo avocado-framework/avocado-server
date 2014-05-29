@@ -1,10 +1,10 @@
 %global modulename avocadoserver
-%global commit d077c15fb1543d8c16ed90f5c7d0c7d837c6fead
+%global commit 9edb1469ec70a5553aedb613dfd9ffbea4e0f6c6
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 
 Summary: REST based interface for applications to communicate with the avocado test server
 Name: avocado-server
-Version: 0.1.0
+Version: 0.2.0
 Release: 1%{?dist}
 License: GPLv2
 Group: Development/Tools
@@ -52,5 +52,8 @@ install -p -m 644 data/systemd/%{modulename}.service $RPM_BUILD_ROOT%{_unitdir}/
 %{_unitdir}/%{modulename}.service
 
 %changelog
+* Thu May 29 2014 Cleber Rosa <cleber@redhat.com> - 0.2.0-1
+- Release 0.2.0
+
 * Mon May 12 2014 Cleber Rosa <cleber@redhat.com> - 0.1-1
 - Initial build
