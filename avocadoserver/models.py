@@ -12,6 +12,7 @@
 # Copyright: Red Hat Inc. 2014
 # Author: Cleber Rosa <cleber@redhat.com>
 
+import re
 import uuid
 
 from django.db import models
@@ -66,6 +67,10 @@ class TestStatus(ReadOnlyModel):
 
 
 class Job(models.Model):
+
+    UNIQUEIDENT_RE = re.compile(r'[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}'
+                                '-[0-9a-f]{4}-[0-9a-f]{12}')
+
     name = models.CharField(max_length=255, unique=False, blank=True, null=True)
     uniqueident = models.CharField(max_length=36, unique=True, blank=False,
                                    default=generate_uuid)

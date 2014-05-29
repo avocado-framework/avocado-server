@@ -13,6 +13,7 @@
 # Author: Cleber Rosa <cleber@redhat.com>
 
 from avocadoserver import models, serializers, permissions
+from django.http import Http404
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -33,6 +34,26 @@ class JobStatusViewSet(viewsets.ReadOnlyModelViewSet):
 class JobViewSet(viewsets.ModelViewSet):
     queryset = models.Job.objects.all()
     serializer_class = serializers.JobSerializer
+
+    def retrieve(self, request, pk):
+        if models.Job.UNIQUEIDENT_RE.match(pk):
+            self.object = self.get_object_by_uniqueident(pk)
+        else:
+            self.object = self.get_object_by_pk(pk)
+        serializer = self.get_serializer(self.object)
+        return Response(serializer.data)
+
+    def get_object_by_pk(self, pk):
+        try:
+            return models.Job.objects.get(pk=pk)
+        except models.Job.DoesNotExist:
+            raise Http404
+
+    def get_object_by_uniqueident(self, uniqueident):
+        try:
+            return models.Job.objects.get(uniqueident=uniqueident)
+        except models.Job.DoesNotExist:
+            raise Http404
 
     @action(methods=['POST'])
     def activity(self, request, pk=None):
