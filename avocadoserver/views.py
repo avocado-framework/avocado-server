@@ -16,7 +16,7 @@ from avocadoserver import models, serializers, permissions
 from django.http import Http404
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from rest_framework.decorators import action
+from rest_framework.decorators import action, link
 
 
 class TestStatusViewSet(viewsets.ReadOnlyModelViewSet):
@@ -36,12 +36,16 @@ class JobViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.JobSerializer
 
     def retrieve(self, request, pk):
-        if models.Job.UNIQUEIDENT_RE.match(pk):
-            self.object = self.get_object_by_uniqueident(pk)
-        else:
-            self.object = self.get_object_by_pk(pk)
+        self.object = self.get_object(pk)
         serializer = self.get_serializer(self.object)
         return Response(serializer.data)
+
+    def get_object(self, pk):
+        if models.Job.UNIQUEIDENT_RE.match(pk):
+            return self.get_object_by_uniqueident(pk)
+        else:
+            return self.get_object_by_pk(pk)
+        return self.object
 
     def get_object_by_pk(self, pk):
         try:
@@ -54,6 +58,13 @@ class JobViewSet(viewsets.ModelViewSet):
             return models.Job.objects.get(uniqueident=uniqueident)
         except models.Job.DoesNotExist:
             raise Http404
+
+    @link
+    def tests(self, request, pk=None):
+        job = self.get_object(pk)
+        queryset = models.Test.objects.filter(job=job)
+        serializer = serializers.TestSerializer(queryset, many=True)
+        return Response(serializer.data)
 
     @action(methods=['POST'])
     def activity(self, request, pk=None):
