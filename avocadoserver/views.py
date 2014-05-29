@@ -99,11 +99,28 @@ class JobViewSet(viewsets.ModelViewSet):
             return Response(test_activity.errors,
                             status=status.HTTP_400_BAD_REQUEST)
 
+class JobActivityViewSet(viewsets.ModelViewSet):
+    queryset = models.JobActivity.objects.all()
+    serializer_class = serializers.JobActivitySerializer
+
+    def create(self, request, job_pk):
+        try:
+            job = models.Job.objects.get(pk=job_pk)
+        except models.Job.DoesNotExist:
+            raise Http404
+
+        job_activity = models.JobActivity.objects.create(
+            job=job,
+            activity=request.DATA['activity'],
+            time=request.DATA['time'])
+
+        job_activity.save()
+        return Response({'status': 'job activity added'})
+
 
 class TestViewSet(viewsets.ModelViewSet):
     queryset = models.Test.objects.all()
     serializer_class = serializers.TestSerializer
-
 
     def create(self, request, job_pk):
         try:

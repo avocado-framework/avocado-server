@@ -22,6 +22,7 @@ router.register(r'teststatuses', views.TestStatusViewSet)
 router.register(r'jobs', views.JobViewSet)
 
 jobs_router = routers.NestedSimpleRouter(router, r'jobs', lookup='job')
+jobs_router.register(r'activities', views.JobActivityViewSet)
 jobs_router.register(r'tests', views.TestViewSet)
 
 tests_router = routers.NestedSimpleRouter(jobs_router, 'tests', lookup='test')
