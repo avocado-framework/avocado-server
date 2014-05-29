@@ -140,7 +140,7 @@ class ModelsUnitests(unittest.TestCase):
             activity='SETUP_START',
             time=now)
         now = datetime.datetime.utcnow().replace(tzinfo=utc)
-        test_setup_end = models.TestActivity(
+        test_setup_end = models.TestActivity.objects.create(
             test=test,
             activity='SETUP_END',
             time=now)
