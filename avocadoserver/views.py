@@ -16,7 +16,7 @@ from avocadoserver import models, serializers, permissions
 from django.http import Http404
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from rest_framework.decorators import action
+from rest_framework.decorators import action, link
 
 
 class TestStatusViewSet(viewsets.ReadOnlyModelViewSet):
@@ -58,6 +58,24 @@ class JobViewSet(viewsets.ModelViewSet):
             return models.Job.objects.get(uniqueident=uniqueident)
         except models.Job.DoesNotExist:
             raise Http404
+
+    @link()
+    def testcount(self, request, pk):
+        test_count = models.Test.objects.filter(job_id=pk).count()
+        return Response({'testcount': test_count})
+
+    @link()
+    def passrate(self, request, pk):
+        test_count = models.Test.objects.filter(job_id=pk).count()
+        if test_count == 0:
+            return Response({'passrate': 0})
+
+        test_status_success = models.TestStatus.objects.get(name='PASS')
+        test_count_pass = models.Test.objects.filter(job_id=pk,
+                                                     status=test_status_success).count()
+
+        rate = round((float(test_count_pass) / float(test_count)) * 100, 2)
+        return Response({'passrate': rate})
 
     @action(methods=['POST'])
     def activity(self, request, pk=None):
