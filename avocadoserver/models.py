@@ -12,6 +12,7 @@
 # Copyright: Red Hat Inc. 2014
 # Author: Cleber Rosa <cleber@redhat.com>
 
+import re
 import uuid
 
 from django.db import models
@@ -67,6 +68,9 @@ class TestStatus(ReadOnlyModel):
 
 class Job(models.Model):
 
+    UNIQUEIDENT_RE = re.compile(r'[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}'
+                                '-[0-9a-f]{4}-[0-9a-f]{12}')
+
     name = models.CharField(max_length=255, unique=False, blank=True, null=True)
     uniqueident = models.CharField(max_length=36, unique=True, blank=False,
                                    default=generate_uuid)
@@ -87,15 +91,33 @@ class JobActivity(models.Model):
         unique_together = ('job', 'activity', 'time')
 
 
+class Test(models.Model):
+    job = models.ForeignKey(Job, related_name='tests')
+    tag = models.CharField(max_length=255, blank=False)
+    status = models.ForeignKey(TestStatus, null=True, blank=True)
+
+    class Meta:
+        unique_together = ('job', 'tag', 'status')
+
+
+class TestData(models.Model):
+    test = models.ForeignKey(Test, related_name='datum')
+    category = models.CharField(max_length=255, blank=False)
+    key = models.CharField(max_length=255, blank=False)
+    value = models.BinaryField(null=True, blank=True)
+
+    class Meta:
+        unique_together = ('test', 'category', 'key')
+
+
 class TestActivity(models.Model):
-    job = models.ForeignKey(Job, related_name='test_activities')
-    test_tag = models.CharField(max_length=255, blank=False)
+    test = models.ForeignKey(Test, related_name='activities')
     activity = models.CharField(max_length=20, blank=False)
     time = models.DateTimeField()
     status = models.ForeignKey(TestStatus, null=True, blank=True)
 
     def __unicode__(self):
-        return "%s %s at %s" % (self.test_tag, self.activity, self.time)
+        return "%s %s at %s" % (self.test, self.activity, self.time)
 
     class Meta:
-        unique_together = ('job', 'test_tag', 'activity', 'time', 'status')
+        unique_together = ('test', 'activity', 'time', 'status')

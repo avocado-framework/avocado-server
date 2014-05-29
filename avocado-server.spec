@@ -11,8 +11,13 @@ Group: Development/Tools
 URL: http://avocado-framework.readthedocs.org/
 BuildArch: noarch
 Source0: https://github.com/avocado-framework/%{name}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
-BuildRequires: python2-devel, systemd
-Requires: python, python-django-restframework, python-gunicorn, systemd
+BuildRequires: python2-devel
+BuildRequires: systemd
+Requires: python
+Requires: python-django-restframework
+Requires: python-django-restframework-nestedrouters
+Requires: python-gunicorn
+Requires: systemd
 
 %description
 avocado-server provides a REST based interface for applications to communicate
