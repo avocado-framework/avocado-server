@@ -42,7 +42,7 @@ Running
 
 Run::
 
-   $ ./scripts/avocado-server-manage runserver
+   $ ./scripts/avocado-server-manage runserver 0.0.0.0:9405
 
 Now open your browser at the given address, log in with your recently created credentials and explore the API.
 
@@ -89,7 +89,7 @@ This will list the known test statuses. Please note that a given job can have mu
 
 Usage example::
 
-   $ curl http://127.0.0.1:8000/teststatuses/
+   $ curl http://127.0.0.1:9405/teststatuses/
 
 Sample (beautified) JSON result::
 
@@ -113,7 +113,7 @@ One point that proves that is a job unique identification number, a `uuid`, that
 
 Usage example (requires authentication)::
 
-   $ curl -u admin:password http://127.0.0.1:8000/jobs/
+   $ curl -u admin:password http://127.0.0.1:9405/jobs/
 
 Sample (beautified) JSON result::
 
@@ -183,7 +183,7 @@ This API accepts receiving test data, that is, POSTing new tests that are part o
 
 To register a new test and its status for a given job you could run::
 
-   curl -u admin:123 -H "Content-Type: application/json" -d '{"tag": "newtest", "status": "PASS"}' http://localhost:9405/jobs/1/tests/
+   $ curl -u admin:123 -H "Content-Type: application/json" -d '{"tag": "newtest", "status": "PASS"}' http://localhost:9405/jobs/1/tests/
 
 The result will hopefully be::
 
@@ -192,3 +192,17 @@ The result will hopefully be::
 Now you can probably re-check the passrate for the same job by GETting `/jobs/1/passrate`::
 
    {"passrate": 75.0}
+
+jobs/<id>/activities/
+~~~~~~~~~~~~~~~~~~~~~
+
+This API accepts receiving job activity data, that is, POSTing new activities, and also listing (via GET) the activities of a job. Calling `/jobs/1/activities/` can GET you::
+
+   {"count": 1, "next": null, "previous": null, "results":
+      [{"job": 1, "activity": "JOB_START", "time": "2013-05-02T04:59:59Z"}]
+
+Later, say that the job finishes running, the server may be updated by a client such as::
+
+   $ curl -u admin:123 -H "Content-Type: application/json" \
+     -d '{"activity": "JOB_FINISHED", "time": "2013-05-02 00:01:01"}' \
+     http://localhost:9405/jobs/1/activities/
