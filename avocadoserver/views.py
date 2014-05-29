@@ -85,3 +85,21 @@ class JobViewSet(viewsets.ModelViewSet):
 class TestViewSet(viewsets.ModelViewSet):
     queryset = models.Test.objects.all()
     serializer_class = serializers.TestSerializer
+
+
+    def create(self, request, job_pk):
+        try:
+            job = models.Job.objects.get(pk=job_pk)
+        except models.Job.DoesNotExist:
+            raise Http404
+
+        try:
+            teststatus = models.TestStatus.objects.get(name=request.DATA['status'])
+        except models.TestStatus.DoesNotExist:
+            raise Http404
+
+        test = models.Test.objects.create(job=job,
+                                          status=teststatus,
+                                          tag=request.DATA['tag'])
+        test.save()
+        return Response({'status': 'test added'})
