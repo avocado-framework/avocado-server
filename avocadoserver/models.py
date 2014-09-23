@@ -17,9 +17,7 @@ import uuid
 
 from django.db import models
 
-
-def generate_uuid():
-    return str(uuid.uuid4())
+from job_id import create_unique_job_id
 
 
 class ReadOnlyModel(models.Model):
@@ -67,19 +65,18 @@ class TestStatus(ReadOnlyModel):
 
 
 class Job(models.Model):
-
-    UNIQUEIDENT_RE = re.compile(r'[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}'
-                                '-[0-9a-f]{4}-[0-9a-f]{12}')
-
+    id = models.CharField(max_length=40, unique=True, blank=False, primary_key=True,
+                          default=create_unique_job_id)
     name = models.CharField(max_length=255, unique=False, blank=True, null=True)
-    uniqueident = models.CharField(max_length=36, unique=True, blank=False,
-                                   default=generate_uuid)
     timeout = models.IntegerField(default=0)
     priority = models.ForeignKey(JobPriority, null=True, blank=True)
     status = models.ForeignKey(JobStatus, null=True, blank=True)
 
     def __unicode__(self):
-        return "%s (%s)" % (self.name, self.uniqueident)
+        if self.name:
+            return "%s (%s)" % (self.id, self.name)
+        else:
+            return self.id
 
 
 class JobActivity(models.Model):
