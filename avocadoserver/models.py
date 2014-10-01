@@ -94,7 +94,7 @@ class Test(models.Model):
     status = models.ForeignKey(TestStatus, null=True, blank=True)
 
     class Meta:
-        unique_together = ('job', 'tag', 'status')
+        unique_together = ('job', 'tag')
 
 
 class TestData(models.Model):
