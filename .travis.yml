@@ -12,6 +12,6 @@ install:
     - pip install -r requirements.txt
 
 script:
-    - ./unittests/runtests.py -c .nose.cfg
+    - ./selftests/runtests.py -c .nose.cfg
     - inspekt lint
     - inspekt style

@@ -35,30 +35,6 @@ class JobViewSet(viewsets.ModelViewSet):
     queryset = models.Job.objects.all()
     serializer_class = serializers.JobSerializer
 
-    def retrieve(self, request, pk):
-        self.object = self.get_object(pk)
-        serializer = self.get_serializer(self.object)
-        return Response(serializer.data)
-
-    def get_object(self, pk):
-        if models.Job.UNIQUEIDENT_RE.match(pk):
-            return self.get_object_by_uniqueident(pk)
-        else:
-            return self.get_object_by_pk(pk)
-        return self.object
-
-    def get_object_by_pk(self, pk):
-        try:
-            return models.Job.objects.get(pk=pk)
-        except models.Job.DoesNotExist:
-            raise Http404
-
-    def get_object_by_uniqueident(self, uniqueident):
-        try:
-            return models.Job.objects.get(uniqueident=uniqueident)
-        except models.Job.DoesNotExist:
-            raise Http404
-
     @link()
     def testcount(self, request, pk):
         test_count = models.Test.objects.filter(job_id=pk).count()

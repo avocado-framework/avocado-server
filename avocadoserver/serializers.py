@@ -132,6 +132,5 @@ class JobSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Job
-        fields = ('id', 'name', 'uniqueident', 'timeout', 'priority', 'status',
+        fields = ('id', 'name', 'timeout', 'priority', 'status',
                   'activities', 'tests')
-        read_only_fields = ('id', )

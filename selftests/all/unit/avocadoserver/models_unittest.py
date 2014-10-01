@@ -76,15 +76,19 @@ class ModelsUnitests(unittest.TestCase):
         job = models.Job.objects.create(timeout=100)
         self.assertIsNone(job.name)
 
-    def test_job_automatic_uniqueident(self):
-        job = models.Job.objects.create(name='test_job_automatic_uniqueident')
-        self.assertIsNotNone(job.uniqueident)
+    def test_job_automatic_id(self):
+        job = models.Job.objects.create()
+        self.assertIsNotNone(job.id)
+
+    def test_job_automatic_id_len_40(self):
+        job = models.Job.objects.create()
+        self.assertEquals(len(job.id), 40)
 
     def test_job_default_timeout(self):
         job = models.Job.objects.create()
         self.assertEquals(job.timeout, 0)
 
-    def test_job_add_same_uniqueident(self):
+    def test_job_add_same_id(self):
         '''
         Attempts to create two jobs with the same unique identification
 
@@ -93,7 +97,7 @@ class ModelsUnitests(unittest.TestCase):
         job_1 = models.Job.objects.create()
         self.assertRaises(django.db.IntegrityError,
                           models.Job.objects.create,
-                          uniqueident=job_1.uniqueident)
+                          id=job_1.id)
 
     def test_job_add_same_name(self):
         '''
