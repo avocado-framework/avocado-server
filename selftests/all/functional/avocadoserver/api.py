@@ -2,9 +2,6 @@
 This functional test assumes that a previously setup server is running. In the
 future this will provision the server, and shut it down after the test has been
 run.
-
-For now, only run it if you have properly setup the server as defined on
-`BASE_URL`, `USERNAME` and `PASSWORD`.
 """
 
 from avocado import test
@@ -14,25 +11,25 @@ import requests
 
 class api(test.Test):
 
-    BASE_URL = 'http://127.0.0.1:9405'
-    USERNAME = 'admin'
-    PASSWORD = '123'
+    default_params = {'base_url': 'http://127.0.0.1:9405',
+                      'username': 'admin',
+                      'password': '123'}
 
     def get(self, path):
-        return requests.get(self.BASE_URL + path,
-                            auth=(self.USERNAME,
-                                  self.PASSWORD))
+        return requests.get(self.params.base_url + path,
+                            auth=(self.params.username,
+                                  self.params.password))
 
     def post(self, path, data):
-        return requests.post(self.BASE_URL + path,
-                             auth=(self.USERNAME,
-                                   self.PASSWORD),
+        return requests.post(self.params.base_url + path,
+                             auth=(self.params.username,
+                                   self.params.password),
                              data=data)
 
     def delete(self, path):
-        return requests.delete(self.BASE_URL + path,
-                               auth=(self.USERNAME,
-                                     self.PASSWORD))
+        return requests.delete(self.params.base_url + path,
+                               auth=(self.params.username,
+                                     self.params.password))
 
     def test_jobs_empty(self):
         self.log.info('Testing that the server has no jobs')
