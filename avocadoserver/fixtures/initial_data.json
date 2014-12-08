@@ -96,6 +96,21 @@
      "model": "avocadoserver.jobpriority",
      "fields": {"name": "URGENT",
 		"description": "Urgent priority",
-		"priority": 4}}
+		"priority": 4}},
+
+    {"pk": "1",
+     "model": "avocadoserver.linuxdistro",
+     "fields": {"name": "unknown",
+		"version": "0",
+		"release": "0",
+		"arch": "unknown"}},
+
+    {"pk": "1",
+     "model": "avocadoserver.softwarecomponentkind",
+     "fields": {"name": "unknown"}},
+
+    {"pk": "1",
+     "model": "avocadoserver.softwarecomponentarch",
+     "fields": {"name": "unknown"}}
 
 ]
