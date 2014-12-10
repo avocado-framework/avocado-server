@@ -31,6 +31,7 @@ tests_router.register(r'data', views.TestDataViewSet)
 
 urlpatterns = patterns(
     '',
+    url(r'^version/$', 'avocadoserver.views.version'),
     url(r'^', include(router.urls)),
     url(r'^', include(jobs_router.urls)),
     url(r'^', include(tests_router.urls)),

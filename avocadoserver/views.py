@@ -13,10 +13,12 @@
 # Author: Cleber Rosa <cleber@redhat.com>
 
 from avocadoserver import models, serializers, permissions
+from avocadoserver.version import VERSION
 from django.http import Http404
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import action, link
+from rest_framework.decorators import api_view, permission_classes
 
 
 class TestStatusViewSet(viewsets.ReadOnlyModelViewSet):
@@ -164,3 +166,12 @@ class TestDataViewSet(viewsets.ModelViewSet):
 
         test_data.save()
         return Response({'status': 'test data added'})
+
+
+@api_view(['GET'])
+@permission_classes((permissions.ReadOnlyPermission,))
+def version(request, format=None):
+    """
+    Returns the version of the running avocado server as JSON
+    """
+    return Response({'version': VERSION})

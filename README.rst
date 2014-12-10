@@ -57,6 +57,18 @@ REST API Usage
 
 This is a basic description of the API exposed via REST. All the following subsections have as title the URI suffix they are available at.
 
+version/
+~~~~~~~~
+
+The most basic information given by the server is its own version. Usage example::
+
+   $ curl http://127.0.0.1:8000/version/
+
+Sample result::
+
+   {"version": "0.1.0"}
+
+
 jobstatuses/
 ~~~~~~~~~~~~
 
