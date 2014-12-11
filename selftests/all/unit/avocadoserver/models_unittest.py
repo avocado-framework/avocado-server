@@ -164,6 +164,109 @@ class ModelsUnitests(unittest.TestCase):
                    'vconsole.font=latarcyrheb-sun16 rd.lvm.lv=vg_x220/swap '
                    'rhgb quiet LANG=en_US.UTF-8'))
 
+    def test_sofware_component_kind_create_delete(self):
+        models.SoftwareComponentKind.objects.create(name='rpm')
+        self.assertEqual(2, models.SoftwareComponentKind.objects.all().count())
+
+        models.SoftwareComponentKind.objects.all().delete()
+        self.assertEqual(0, models.SoftwareComponentKind.objects.all().count())
+
+    def test_software_component_kind_create_duplicate(self):
+        def create_kind():
+            models.SoftwareComponentKind.objects.create(name='rpm')
+
+        create_kind()
+        self.assertRaises(django.db.IntegrityError, create_kind)
+        models.SoftwareComponentKind.objects.all().delete()
+
+    def test_software_component_arch_create_delete(self):
+        models.SoftwareComponentArch.objects.create(name='x86_64')
+        self.assertEqual(2, models.SoftwareComponentArch.objects.all().count())
+
+        models.SoftwareComponentArch.objects.all().delete()
+        self.assertEqual(0, models.SoftwareComponentArch.objects.all().count())
+
+    def test_software_component_arch_create_duplicate(self):
+        def create_arch():
+            models.SoftwareComponentArch.objects.create(name='x86_64')
+
+        create_arch()
+        self.assertRaises(django.db.IntegrityError, create_arch)
+        models.SoftwareComponentArch.objects.all().delete()
+
+    def test_software_component_delete_reference(self):
+        '''
+        Should not be possible to delete a Software Component Arch that
+        is referenced by an existing Software Component
+        '''
+        kind = models.SoftwareComponentKind.objects.create(name='rpm')
+        kind.save()
+        kind_id = kind.id
+
+        arch = models.SoftwareComponentArch.objects.create(name='x86_64')
+        arch.save()
+        arch_id = arch.id
+
+        sc = models.SoftwareComponent.objects.create(name='foo',
+                                                     kind=kind,
+                                                     arch=arch,
+                                                     version='1.0.0')
+        sc.save()
+        sc_id = sc.id
+        sc = models.SoftwareComponent.objects.get(pk=sc_id)
+
+        arch = models.SoftwareComponentArch.objects.get(pk=arch_id)
+
+        def arch_delete():
+            arch.delete()
+
+        self.assertRaises(django.db.models.ProtectedError, arch_delete)
+        models.SoftwareComponent.objects.all().delete()
+        models.SoftwareComponentKind.objects.all().delete()
+        models.SoftwareComponentArch.objects.all().delete()
+
+    def test_distro_create_delete(self):
+        # The builtin 'unknown distro' accounts for the first count
+        self.assertEqual(1, models.LinuxDistro.objects.all().count())
+
+        models.LinuxDistro.objects.create(name='distro', version='1',
+                                          release='0', arch='i386')
+
+        self.assertEqual(2, models.LinuxDistro.objects.all().count())
+
+        models.LinuxDistro.objects.all().delete()
+        self.assertEqual(0, models.LinuxDistro.objects.all().count())
+
+    def test_distro_create_query_arch_delete(self):
+        models.LinuxDistro.objects.create(name='distro', version='1',
+                                          release='0', arch='i386')
+        models.LinuxDistro.objects.create(name='distro', version='1',
+                                          release='1', arch='i386')
+        models.LinuxDistro.objects.create(name='distro', version='1',
+                                          release='0', arch='x86_64')
+        models.LinuxDistro.objects.create(name='distro', version='1',
+                                          release='1', arch='x86_64')
+
+        all_count = models.LinuxDistro.objects.all().count()
+        self.assertEqual(all_count, 5)
+        i386_count = models.LinuxDistro.objects.filter(arch='i386').count()
+        self.assertEqual(i386_count, 2)
+
+        models.LinuxDistro.objects.get(name='distro', version='1',
+                                       release='0', arch='i386').delete()
+        models.LinuxDistro.objects.get(name='distro', version='1',
+                                       release='1', arch='i386').delete()
+        self.assertEqual(3, models.LinuxDistro.objects.all().count())
+
+    def test_distro_create_duplicate(self):
+        def create_distro():
+            models.LinuxDistro.objects.create(name='distro', version='1',
+                                              release='0', arch='i386')
+
+        create_distro()
+        self.assertRaises(django.db.IntegrityError, create_distro)
+        models.LinuxDistro.objects.all().delete()
+
 
 if __name__ == '__main__':
     unittest.main()
