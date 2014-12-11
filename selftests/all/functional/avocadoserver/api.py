@@ -31,6 +31,11 @@ class api(test.Test):
                                auth=(self.params.username,
                                      self.params.password))
 
+    def test_version(self):
+        self.log.info('Testing that the server returns its version')
+        r = self.get("/version/")
+        self.assertEquals(r.status_code, 200)
+
     def test_jobs_empty(self):
         self.log.info('Testing that the server has no jobs')
         emtpy = {u'count': 0,
@@ -66,6 +71,7 @@ class api(test.Test):
         self.test_jobs_empty()
 
     def action(self):
+        self.test_version()
         self.test_jobs_empty()
         self.test_jobs_add()
         self.test_jobs_del()
