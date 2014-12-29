@@ -176,26 +176,6 @@ Later, say that the job finishes running, the server may be updated by a client 
      http://localhost:9405/jobs/1/activities/
 
 
-jobs/<id>/testcount/
-~~~~~~~~~~~~~~~~~~~~
-
-This is a utility API that returns the number of tests that are part of the given job. Calling `/jobs/1/testcount/` GETs you::
-
-   {"testcount": 3}
-
-It's intended to be as simple as that.
-
-
-jobs/<id>/passrate/
-~~~~~~~~~~~~~~~~~~~
-
-This is another utility API that returns the passrate for the tests that are part of the given job. Calling `/jobs/1/passrate/` GETs you::
-
-   {"passrate": 66.67}
-
-This job has had two tests that PASSed and one that FAILed. The rate gets rounded to two decimal digits.
-
-
 jobs/<id>/tests/
 ~~~~~~~~~~~~~~~~
 

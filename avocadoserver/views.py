@@ -37,24 +37,6 @@ class JobViewSet(viewsets.ModelViewSet):
     queryset = models.Job.objects.all()
     serializer_class = serializers.JobSerializer
 
-    @link()
-    def testcount(self, request, pk):
-        test_count = models.Test.objects.filter(job_id=pk).count()
-        return Response({'testcount': test_count})
-
-    @link()
-    def passrate(self, request, pk):
-        test_count = models.Test.objects.filter(job_id=pk).count()
-        if test_count == 0:
-            return Response({'passrate': 0})
-
-        test_status_success = models.TestStatus.objects.get(name='PASS')
-        test_count_pass = models.Test.objects.filter(job_id=pk,
-                                                     status=test_status_success).count()
-
-        rate = round((float(test_count_pass) / float(test_count)) * 100, 2)
-        return Response({'passrate': rate})
-
     @action(methods=['POST'])
     def activity(self, request, pk=None):
         # pylint: disable=E1123
