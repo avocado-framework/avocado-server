@@ -64,6 +64,24 @@ class api(test.Test):
         data = {"name": "NEW_STATUS"}
         self.post("/jobstatuses/", data, 403)
 
+    def test_teststatus_list(self):
+        self.log.info('Testing that the server has preloaded test statuses')
+        r = self.get("/teststatuses/")
+        json = r.json()
+        self.assertEquals(json["count"], 5)
+        names = [d.get("name") for d in json["results"]]
+        self.assertIn("PASS", names)
+        self.assertIn("ERROR", names)
+        self.assertIn("FAIL", names)
+        self.assertIn("TEST_NA", names)
+        self.assertIn("WARN", names)
+
+    def test_teststatus_noadd(self):
+        self.log.info('Testing that the server does not allow adding a new '
+                      'test status')
+        data = {"name": "NEW_STATUS"}
+        self.post("/teststatuses/", data, 403)
+
     def test_jobs_empty(self):
         self.log.info('Testing that the server has no jobs')
         emtpy = {u'count': 0,
@@ -102,6 +120,8 @@ class api(test.Test):
         self.test_version()
         self.test_jobstatus_list()
         self.test_jobstatus_noadd()
+        self.test_teststatus_list()
+        self.test_teststatus_noadd()
         self.test_jobs_empty()
         self.test_jobs_add()
         self.test_jobs_del()
