@@ -21,6 +21,15 @@ from rest_framework.decorators import detail_route
 from rest_framework.decorators import api_view, permission_classes
 
 
+@api_view(['GET'])
+@permission_classes((permissions.ReadOnlyPermission,))
+def version(request, format=None):
+    """
+    Returns the version of the running avocado server as JSON
+    """
+    return Response({'version': VERSION})
+
+
 class TestStatusViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = models.TestStatus.objects.all()
     serializer_class = serializers.TestStatusSerializer
@@ -148,12 +157,3 @@ class TestDataViewSet(viewsets.ModelViewSet):
 
         test_data.save()
         return Response({'status': 'test data added'})
-
-
-@api_view(['GET'])
-@permission_classes((permissions.ReadOnlyPermission,))
-def version(request, format=None):
-    """
-    Returns the version of the running avocado server as JSON
-    """
-    return Response({'version': VERSION})
