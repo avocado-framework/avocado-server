@@ -17,7 +17,7 @@ from avocadoserver.version import VERSION
 from django.http import Http404
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from rest_framework.decorators import action, link
+from rest_framework.decorators import detail_route
 from rest_framework.decorators import api_view, permission_classes
 
 
@@ -37,8 +37,8 @@ class JobViewSet(viewsets.ModelViewSet):
     queryset = models.Job.objects.all()
     serializer_class = serializers.JobSerializer
 
-    @action(methods=['POST'])
-    def activity(self, request, pk=None):
+    @detail_route(methods=['post'])
+    def activity(self, request, *args, **kwargs):
         # pylint: disable=E1123
         job_activity = serializers.JobActivitySerializer(data=request.DATA)
         if job_activity.is_valid():
@@ -48,8 +48,8 @@ class JobViewSet(viewsets.ModelViewSet):
             return Response(job_activity.errors,
                             status=status.HTTP_400_BAD_REQUEST)
 
-    @action(methods=['POST'])
-    def test_activity(self, request, pk=None):
+    @detail_route(methods=['post'])
+    def test_activity(self, request, *args, **kwargs):
         # pylint: disable=E1123
         test_activity = serializers.TestActivitySerializer(data=request.DATA)
         if test_activity.is_valid():
