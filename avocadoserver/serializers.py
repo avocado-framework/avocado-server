@@ -123,13 +123,6 @@ class JobSerializer(serializers.ModelSerializer):
     activities = JobActivitySerializer(many=True, read_only=True)
     tests = TestSerializer(many=True, read_only=True)
 
-    def validate_timeout(self, attrs, source):
-        '''
-        Correct negative timeouts, since they don't make sense
-        '''
-        attrs['timeout'] = max(attrs['timeout'], 0)
-        return attrs
-
     class Meta:
         model = models.Job
         fields = ('id', 'name', 'timeout', 'priority', 'status',
