@@ -24,6 +24,13 @@ class JobStatusSerializer(serializers.ModelSerializer):
         fields = ('name', 'description')
 
 
+class JobPrioritySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.JobPriority
+        fields = ('name', 'description')
+
+
 class TestStatusSerializer(serializers.ModelSerializer):
 
     class Meta:
