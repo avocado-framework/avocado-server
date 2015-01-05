@@ -112,12 +112,12 @@ class api(test.Test):
     def test_jobs_add(self):
         self.log.info('Testing that a new job can be added')
         job = {u'id': u'a0a272a09d2edda895bae4d75f5aebfad6562fb0',
-               u'status': 'NOSTATUS',
-               u'activities': [],
-               u'tests': [],
                u'name': u'foobar job',
                u'priority': 'MEDIUM',
-               u'timeout': 0}
+               u'status': 'NOSTATUS',
+               u'timeout': 0,
+               u'activities': [],
+               u'tests': []}
 
         data = {"id": "a0a272a09d2edda895bae4d75f5aebfad6562fb0",
                 "name": "foobar job",
