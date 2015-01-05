@@ -136,6 +136,15 @@ class api(test.Test):
         r = self.delete(path)
         self.test_jobs_empty()
 
+    def test_jobs_activities_empty(self):
+        self.log.info('Testing that a newly added job has no activities')
+        job = self.test_jobs_add().json()
+        jobs_path = "/jobs/%s/" % job['id']
+        activities_path = jobs_path + "activities/"
+        activities = self.get(activities_path)
+        self.assertEquals(activities.json(), self.EMPTY_RESPONSE)
+        self.test_jobs_del()
+
     def action(self):
         self.test_version()
         self.test_jobstatus_list()
@@ -145,3 +154,4 @@ class api(test.Test):
         self.test_jobs_empty()
         self.test_jobs_add()
         self.test_jobs_del()
+        self.test_jobs_activities_empty()
