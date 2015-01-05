@@ -125,6 +125,7 @@ class api(test.Test):
                 "status": "NOSTATUS"}
         r = self.post("/jobs/", data)
         self.assertEquals(r.json(), job)
+        return r
 
     def test_jobs_del(self):
         self.log.info('Testing that a job can be deleted')
