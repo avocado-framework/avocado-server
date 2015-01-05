@@ -11,6 +11,11 @@ import requests
 
 class api(test.Test):
 
+    EMPTY_RESPONSE = {u'count': 0,
+                      u'results': [],
+                      u'previous': None,
+                      u'next': None}
+
     default_params = {'base_url': 'http://127.0.0.1:9405',
                       'username': 'admin',
                       'password': '123'}
@@ -101,13 +106,8 @@ class api(test.Test):
 
     def test_jobs_empty(self):
         self.log.info('Testing that the server has no jobs')
-        emtpy = {u'count': 0,
-                 u'results': [],
-                 u'previous': None,
-                 u'next': None}
-
         r = self.get("/jobs/")
-        self.assertEquals(r.json(), emtpy)
+        self.assertEquals(r.json(), self.EMPTY_RESPONSE)
 
     def test_jobs_add(self):
         self.log.info('Testing that a new job can be added')
