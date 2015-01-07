@@ -42,6 +42,12 @@ class JobStatusViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = (permissions.ReadOnlyPermission, )
 
 
+class JobPriorityViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = models.JobPriority.objects.all()
+    serializer_class = serializers.JobPrioritySerializer
+    permission_classes = (permissions.ReadOnlyPermission, )
+
+
 class JobViewSet(viewsets.ModelViewSet):
     queryset = models.Job.objects.all()
     serializer_class = serializers.JobSerializer

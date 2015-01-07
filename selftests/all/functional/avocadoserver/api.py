@@ -11,6 +11,11 @@ import requests
 
 class api(test.Test):
 
+    EMPTY_RESPONSE = {u'count': 0,
+                      u'results': [],
+                      u'previous': None,
+                      u'next': None}
+
     default_params = {'base_url': 'http://127.0.0.1:9405',
                       'username': 'admin',
                       'password': '123'}
@@ -64,6 +69,23 @@ class api(test.Test):
         data = {"name": "NEW_STATUS"}
         self.post("/jobstatuses/", data, 403)
 
+    def test_jobpriority_list(self):
+        self.log.info('Testing that the server has preloaded job priorities')
+        r = self.get("/jobpriorities/")
+        json = r.json()
+        self.assertEquals(json["count"], 4)
+        names = [d.get("name") for d in json["results"]]
+        self.assertIn("LOW", names)
+        self.assertIn("MEDIUM", names)
+        self.assertIn("HIGH", names)
+        self.assertIn("URGENT", names)
+
+    def test_jobpriority_noadd(self):
+        self.log.info('Testing that the server does not allow adding a new job '
+                      'priority')
+        data = {"name": "NEW_PRIORITY"}
+        self.post("/jobspriority/", data, 403)
+
     def test_teststatus_list(self):
         self.log.info('Testing that the server has preloaded test statuses')
         r = self.get("/teststatuses/")
@@ -84,23 +106,18 @@ class api(test.Test):
 
     def test_jobs_empty(self):
         self.log.info('Testing that the server has no jobs')
-        emtpy = {u'count': 0,
-                 u'results': [],
-                 u'previous': None,
-                 u'next': None}
-
         r = self.get("/jobs/")
-        self.assertEquals(r.json(), emtpy)
+        self.assertEquals(r.json(), self.EMPTY_RESPONSE)
 
     def test_jobs_add(self):
         self.log.info('Testing that a new job can be added')
         job = {u'id': u'a0a272a09d2edda895bae4d75f5aebfad6562fb0',
-               u'status': 'NOSTATUS',
-               u'activities': [],
-               u'tests': [],
                u'name': u'foobar job',
                u'priority': 'MEDIUM',
-               u'timeout': 0}
+               u'status': 'NOSTATUS',
+               u'timeout': 0,
+               u'activities': [],
+               u'tests': []}
 
         data = {"id": "a0a272a09d2edda895bae4d75f5aebfad6562fb0",
                 "name": "foobar job",
@@ -108,6 +125,7 @@ class api(test.Test):
                 "status": "NOSTATUS"}
         r = self.post("/jobs/", data)
         self.assertEquals(r.json(), job)
+        return r
 
     def test_jobs_del(self):
         self.log.info('Testing that a job can be deleted')
@@ -118,6 +136,15 @@ class api(test.Test):
         r = self.delete(path)
         self.test_jobs_empty()
 
+    def test_jobs_activities_empty(self):
+        self.log.info('Testing that a newly added job has no activities')
+        job = self.test_jobs_add().json()
+        jobs_path = "/jobs/%s/" % job['id']
+        activities_path = jobs_path + "activities/"
+        activities = self.get(activities_path)
+        self.assertEquals(activities.json(), self.EMPTY_RESPONSE)
+        self.test_jobs_del()
+
     def action(self):
         self.test_version()
         self.test_jobstatus_list()
@@ -127,3 +154,4 @@ class api(test.Test):
         self.test_jobs_empty()
         self.test_jobs_add()
         self.test_jobs_del()
+        self.test_jobs_activities_empty()
