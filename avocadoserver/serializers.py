@@ -93,3 +93,10 @@ class JobSerializer(serializers.ModelSerializer):
         model = models.Job
         fields = ('id', 'name', 'timeout', 'priority', 'status',
                   'activities', 'tests')
+
+
+class SoftwareComponentKindSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.SoftwareComponentKind
+        fields = ("name",)

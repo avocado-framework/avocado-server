@@ -20,6 +20,7 @@ router = routers.SimpleRouter()
 router.register(r'jobstatuses', views.JobStatusViewSet)
 router.register(r'jobpriorities', views.JobPriorityViewSet)
 router.register(r'teststatuses', views.TestStatusViewSet)
+router.register(r'softwarecomponentkinds', views.SoftwareComponentKindViewSet)
 router.register(r'jobs', views.JobViewSet)
 
 jobs_router = routers.NestedSimpleRouter(router, r'jobs', lookup='job')

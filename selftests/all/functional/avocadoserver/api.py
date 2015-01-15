@@ -104,6 +104,14 @@ class api(test.Test):
         data = {"name": "NEW_STATUS"}
         self.post("/teststatuses/", data, 403)
 
+    def test_softwarecomponentkind_list(self):
+        self.log.info('Testing that the server has preloaded software component kinds')
+        r = self.get("/softwarecomponentkinds/")
+        json = r.json()
+        self.assertEquals(json["count"], 1)
+        names = [d.get("name") for d in json["results"]]
+        self.assertIn("unknown", names)
+
     def test_jobs_empty(self):
         self.log.info('Testing that the server has no jobs')
         r = self.get("/jobs/")
@@ -151,6 +159,7 @@ class api(test.Test):
         self.test_jobstatus_noadd()
         self.test_teststatus_list()
         self.test_teststatus_noadd()
+        self.test_softwarecomponentkind_list()
         self.test_jobs_empty()
         self.test_jobs_add()
         self.test_jobs_del()

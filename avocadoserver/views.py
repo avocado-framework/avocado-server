@@ -163,3 +163,8 @@ class TestDataViewSet(viewsets.ModelViewSet):
 
         test_data.save()
         return Response({'status': 'test data added'})
+
+
+class SoftwareComponentKindViewSet(viewsets.ModelViewSet):
+    queryset = models.SoftwareComponentKind.objects.all()
+    serializer_class = serializers.SoftwareComponentKindSerializer
