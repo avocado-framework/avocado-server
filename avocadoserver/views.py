@@ -183,3 +183,8 @@ class SoftwareComponentViewSet(viewsets.ModelViewSet):
 class LinuxDistroViewSet(viewsets.ModelViewSet):
     queryset = models.LinuxDistro.objects.all()
     serializer_class = serializers.LinuxDistroSerializer
+
+
+class TestEnvironmentViewSet(viewsets.ModelViewSet):
+    queryset = models.TestEnvironment.objects.all()
+    serializer_class = serializers.TestEnvironmentSerializer

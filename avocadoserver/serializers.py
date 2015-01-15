@@ -129,3 +129,33 @@ class LinuxDistroSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.LinuxDistro
         fields = ("name", "version", "release", "arch")
+
+
+class LinuxDistroField(serializers.Field):
+
+    def to_internal_value(self, data):
+        try:
+            distro = models.LinuxDistro.objects.get(name=data.get('name'),
+                                                    arch=data.get('arch'),
+                                                    version=data.get('version'),
+                                                    release=data.get('release'))
+            return distro
+        except:
+            self.fail('invalid', input=data)
+
+    def to_representation(self, value):
+        return {'name': value.name,
+                'arch': value.arch,
+                'version': value.version,
+                'release': value.release}
+
+
+class TestEnvironmentSerializer(serializers.ModelSerializer):
+
+    distro = LinuxDistroField()
+    installed_software_components = SoftwareComponentSerializer(many=True,
+                                                                read_only=True)
+
+    class Meta:
+        model = models.TestEnvironment
+        fields = ("distro", "installed_software_components")
