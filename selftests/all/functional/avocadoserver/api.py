@@ -120,6 +120,27 @@ class api(test.Test):
         names = [d.get("name") for d in json["results"]]
         self.assertIn("unknown", names)
 
+    def test_softwarecomponent_list(self):
+        self.log.info('Testing that the server responds to software component listing')
+        r = self.get("/softwarecomponents/")
+
+    def test_softwarecomponent_add(self):
+        path = "/softwarecomponents/"
+        self.log.info('Testing that the server adds a software component')
+        r = self.get(path)
+        count = r.json()["count"]
+
+        data = {"kind": "unknown",
+                "arch": "unknown",
+                "name": "foobar",
+                "version": "1.0",
+                "release": "0",
+                "checksum": "0"}
+        self.post(path, data)
+        r = self.get(path)
+        new_count = r.json()["count"]
+        self.assertEquals(new_count, count + 1)
+
     def test_jobs_empty(self):
         self.log.info('Testing that the server has no jobs')
         r = self.get("/jobs/")
@@ -169,6 +190,8 @@ class api(test.Test):
         self.test_teststatus_noadd()
         self.test_softwarecomponentkind_list()
         self.test_softwarecomponentarch_list()
+        self.test_softwarecomponent_list()
+        self.test_softwarecomponent_add()
         self.test_jobs_empty()
         self.test_jobs_add()
         self.test_jobs_del()

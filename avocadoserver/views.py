@@ -173,3 +173,8 @@ class SoftwareComponentKindViewSet(viewsets.ModelViewSet):
 class SoftwareComponentArchViewSet(viewsets.ModelViewSet):
     queryset = models.SoftwareComponentArch.objects.all()
     serializer_class = serializers.SoftwareComponentArchSerializer
+
+
+class SoftwareComponentViewSet(viewsets.ModelViewSet):
+    queryset = models.SoftwareComponent.objects.all()
+    serializer_class = serializers.SoftwareComponentSerializer

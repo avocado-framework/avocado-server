@@ -107,3 +107,18 @@ class SoftwareComponentArchSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.SoftwareComponentArch
         fields = ("name",)
+
+
+class SoftwareComponentSerializer(serializers.ModelSerializer):
+
+    kind = serializers.SlugRelatedField(
+        slug_field='name',
+        queryset=models.SoftwareComponentKind.objects.all())
+
+    arch = serializers.SlugRelatedField(
+        slug_field='name',
+        queryset=models.SoftwareComponentArch.objects.all())
+
+    class Meta:
+        model = models.SoftwareComponent
+        fields = ("name", "version", "release", "checksum", "kind", "arch")
