@@ -168,3 +168,8 @@ class TestDataViewSet(viewsets.ModelViewSet):
 class SoftwareComponentKindViewSet(viewsets.ModelViewSet):
     queryset = models.SoftwareComponentKind.objects.all()
     serializer_class = serializers.SoftwareComponentKindSerializer
+
+
+class SoftwareComponentArchViewSet(viewsets.ModelViewSet):
+    queryset = models.SoftwareComponentArch.objects.all()
+    serializer_class = serializers.SoftwareComponentArchSerializer

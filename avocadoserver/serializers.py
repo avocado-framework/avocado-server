@@ -100,3 +100,10 @@ class SoftwareComponentKindSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.SoftwareComponentKind
         fields = ("name",)
+
+
+class SoftwareComponentArchSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.SoftwareComponentArch
+        fields = ("name",)
