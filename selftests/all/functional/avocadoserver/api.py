@@ -141,6 +141,33 @@ class api(test.Test):
         new_count = r.json()["count"]
         self.assertEquals(new_count, count + 1)
 
+    def test_linuxdistro_list(self):
+        self.log.info('Testing that the server responds to linux distro listing')
+        r = self.get("/linuxdistros/")
+
+    def test_linuxdistro_add(self):
+        path = "/linuxdistros/"
+        self.log.info('Testing that the server adds a linux distro')
+        r = self.get(path)
+        count = r.json()["count"]
+
+        data = {"arch": "unknown",
+                "name": "avocadix",
+                "release": "1",
+                "version": "0"}
+        self.post(path, data)
+        r = self.get(path)
+        new_count = r.json()["count"]
+        self.assertEquals(new_count, count + 1)
+
+    def test_linuxdistro_no_add_dup(self):
+        path = "/linuxdistros/"
+        self.log.info('Testing that the server does not add a duplicated linux '
+                      'distro')
+        r = self.get(path)
+        distro = r.json()["results"][0]
+        self.post(path, distro, 400)
+
     def test_jobs_empty(self):
         self.log.info('Testing that the server has no jobs')
         r = self.get("/jobs/")
@@ -192,6 +219,9 @@ class api(test.Test):
         self.test_softwarecomponentarch_list()
         self.test_softwarecomponent_list()
         self.test_softwarecomponent_add()
+        self.test_linuxdistro_list()
+        self.test_linuxdistro_add()
+        self.test_linuxdistro_no_add_dup()
         self.test_jobs_empty()
         self.test_jobs_add()
         self.test_jobs_del()

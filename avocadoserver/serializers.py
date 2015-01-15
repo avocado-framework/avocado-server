@@ -122,3 +122,10 @@ class SoftwareComponentSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.SoftwareComponent
         fields = ("name", "version", "release", "checksum", "kind", "arch")
+
+
+class LinuxDistroSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.LinuxDistro
+        fields = ("name", "version", "release", "arch")

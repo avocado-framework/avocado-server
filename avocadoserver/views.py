@@ -178,3 +178,8 @@ class SoftwareComponentArchViewSet(viewsets.ModelViewSet):
 class SoftwareComponentViewSet(viewsets.ModelViewSet):
     queryset = models.SoftwareComponent.objects.all()
     serializer_class = serializers.SoftwareComponentSerializer
+
+
+class LinuxDistroViewSet(viewsets.ModelViewSet):
+    queryset = models.LinuxDistro.objects.all()
+    serializer_class = serializers.LinuxDistroSerializer
