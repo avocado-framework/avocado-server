@@ -6,6 +6,7 @@ run.
 
 from avocado import test
 
+import json
 import requests
 
 
@@ -104,6 +105,101 @@ class api(test.Test):
         data = {"name": "NEW_STATUS"}
         self.post("/teststatuses/", data, 403)
 
+    def test_softwarecomponentkind_list(self):
+        self.log.info('Testing that the server has preloaded software component kinds')
+        r = self.get("/softwarecomponentkinds/")
+        json = r.json()
+        self.assertEquals(json["count"], 1)
+        names = [d.get("name") for d in json["results"]]
+        self.assertIn("unknown", names)
+
+    def test_softwarecomponentarch_list(self):
+        self.log.info('Testing that the server has preloaded software component arches')
+        r = self.get("/softwarecomponentarches/")
+        json = r.json()
+        self.assertEquals(json["count"], 1)
+        names = [d.get("name") for d in json["results"]]
+        self.assertIn("unknown", names)
+
+    def test_softwarecomponent_list(self):
+        self.log.info('Testing that the server responds to software component listing')
+        r = self.get("/softwarecomponents/")
+
+    def test_softwarecomponent_add(self):
+        path = "/softwarecomponents/"
+        self.log.info('Testing that the server adds a software component')
+        r = self.get(path)
+        count = r.json()["count"]
+
+        data = {"kind": "unknown",
+                "arch": "unknown",
+                "name": "foobar",
+                "version": "1.0",
+                "release": "0",
+                "checksum": "0"}
+        self.post(path, data)
+        r = self.get(path)
+        new_count = r.json()["count"]
+        self.assertEquals(new_count, count + 1)
+
+    def test_linuxdistro_list(self):
+        self.log.info('Testing that the server responds to linux distro listing')
+        r = self.get("/linuxdistros/")
+
+    def test_linuxdistro_add(self):
+        path = "/linuxdistros/"
+        self.log.info('Testing that the server adds a linux distro')
+        r = self.get(path)
+        count = r.json()["count"]
+
+        data = {"arch": "unknown",
+                "name": "avocadix",
+                "release": "1",
+                "version": "0"}
+        self.post(path, data)
+        r = self.get(path)
+        new_count = r.json()["count"]
+        self.assertEquals(new_count, count + 1)
+
+    def test_linuxdistro_no_add_dup(self):
+        path = "/linuxdistros/"
+        self.log.info('Testing that the server does not add a duplicated linux '
+                      'distro')
+        r = self.get(path)
+        distro = r.json()["results"][0]
+        self.post(path, distro, 400)
+
+    def test_testenvironment_empty(self):
+        self.log.info('Testing that the server has no test environments')
+        r = self.get("/testenvironments/")
+        self.assertEquals(r.json(), self.EMPTY_RESPONSE)
+
+    def test_testenvironment_add(self):
+        path = "/testenvironments/"
+        self.log.info('Testing that the server adds a test environment')
+        r = self.get(path)
+        count = r.json()["count"]
+
+        distro = {"distro": {"arch": "unknown",
+                             "name": "unknown",
+                             "release": "0",
+                             "version": "0"}}
+        data = json.dumps(distro)
+
+        # Help the the server request parser by telling it we'll be
+        # using json and not, say, form encoded data
+        headers = {'content-type': 'application/json'}
+        response = requests.post(self.params.base_url + path,
+                                 auth=(self.params.username,
+                                       self.params.password),
+                                 headers=headers,
+                                 data=data)
+        self.assertEquals(response.status_code, 201)
+
+        r = self.get(path)
+        new_count = r.json()["count"]
+        self.assertEquals(new_count, count + 1)
+
     def test_jobs_empty(self):
         self.log.info('Testing that the server has no jobs')
         r = self.get("/jobs/")
@@ -151,6 +247,15 @@ class api(test.Test):
         self.test_jobstatus_noadd()
         self.test_teststatus_list()
         self.test_teststatus_noadd()
+        self.test_softwarecomponentkind_list()
+        self.test_softwarecomponentarch_list()
+        self.test_softwarecomponent_list()
+        self.test_softwarecomponent_add()
+        self.test_linuxdistro_list()
+        self.test_linuxdistro_add()
+        self.test_linuxdistro_no_add_dup()
+        self.test_testenvironment_empty()
+        self.test_testenvironment_add()
         self.test_jobs_empty()
         self.test_jobs_add()
         self.test_jobs_del()

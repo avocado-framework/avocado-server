@@ -93,3 +93,69 @@ class JobSerializer(serializers.ModelSerializer):
         model = models.Job
         fields = ('id', 'name', 'timeout', 'priority', 'status',
                   'activities', 'tests')
+
+
+class SoftwareComponentKindSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.SoftwareComponentKind
+        fields = ("name",)
+
+
+class SoftwareComponentArchSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.SoftwareComponentArch
+        fields = ("name",)
+
+
+class SoftwareComponentSerializer(serializers.ModelSerializer):
+
+    kind = serializers.SlugRelatedField(
+        slug_field='name',
+        queryset=models.SoftwareComponentKind.objects.all())
+
+    arch = serializers.SlugRelatedField(
+        slug_field='name',
+        queryset=models.SoftwareComponentArch.objects.all())
+
+    class Meta:
+        model = models.SoftwareComponent
+        fields = ("name", "version", "release", "checksum", "kind", "arch")
+
+
+class LinuxDistroSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.LinuxDistro
+        fields = ("name", "version", "release", "arch")
+
+
+class LinuxDistroField(serializers.Field):
+
+    def to_internal_value(self, data):
+        try:
+            distro = models.LinuxDistro.objects.get(name=data.get('name'),
+                                                    arch=data.get('arch'),
+                                                    version=data.get('version'),
+                                                    release=data.get('release'))
+            return distro
+        except:
+            self.fail('invalid', input=data)
+
+    def to_representation(self, value):
+        return {'name': value.name,
+                'arch': value.arch,
+                'version': value.version,
+                'release': value.release}
+
+
+class TestEnvironmentSerializer(serializers.ModelSerializer):
+
+    distro = LinuxDistroField()
+    installed_software_components = SoftwareComponentSerializer(many=True,
+                                                                read_only=True)
+
+    class Meta:
+        model = models.TestEnvironment
+        fields = ("distro", "installed_software_components")

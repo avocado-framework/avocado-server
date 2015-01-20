@@ -163,3 +163,28 @@ class TestDataViewSet(viewsets.ModelViewSet):
 
         test_data.save()
         return Response({'status': 'test data added'})
+
+
+class SoftwareComponentKindViewSet(viewsets.ModelViewSet):
+    queryset = models.SoftwareComponentKind.objects.all()
+    serializer_class = serializers.SoftwareComponentKindSerializer
+
+
+class SoftwareComponentArchViewSet(viewsets.ModelViewSet):
+    queryset = models.SoftwareComponentArch.objects.all()
+    serializer_class = serializers.SoftwareComponentArchSerializer
+
+
+class SoftwareComponentViewSet(viewsets.ModelViewSet):
+    queryset = models.SoftwareComponent.objects.all()
+    serializer_class = serializers.SoftwareComponentSerializer
+
+
+class LinuxDistroViewSet(viewsets.ModelViewSet):
+    queryset = models.LinuxDistro.objects.all()
+    serializer_class = serializers.LinuxDistroSerializer
+
+
+class TestEnvironmentViewSet(viewsets.ModelViewSet):
+    queryset = models.TestEnvironment.objects.all()
+    serializer_class = serializers.TestEnvironmentSerializer
