@@ -13,10 +13,11 @@
 # Author: Cleber Rosa <cleber@redhat.com>
 
 from django.conf.urls import patterns, include, url
-from rest_framework_nested import routers
+from avocadoserver import routers
+from rest_framework_nested import routers as nested
 import views
 
-router = routers.SimpleRouter()
+router = routers.DefaultRouter()
 router.register(r'jobstatuses', views.JobStatusViewSet)
 router.register(r'jobpriorities', views.JobPriorityViewSet)
 router.register(r'teststatuses', views.TestStatusViewSet)
@@ -27,11 +28,11 @@ router.register(r'linuxdistros', views.LinuxDistroViewSet)
 router.register(r'testenvironments', views.TestEnvironmentViewSet)
 router.register(r'jobs', views.JobViewSet)
 
-jobs_router = routers.NestedSimpleRouter(router, r'jobs', lookup='job')
+jobs_router = nested.NestedSimpleRouter(router, r'jobs', lookup='job')
 jobs_router.register(r'activities', views.JobActivityViewSet)
 jobs_router.register(r'tests', views.TestViewSet)
 
-tests_router = routers.NestedSimpleRouter(jobs_router, 'tests', lookup='test')
+tests_router = nested.NestedSimpleRouter(jobs_router, 'tests', lookup='test')
 tests_router.register(r'activities', views.TestActivityViewSet)
 tests_router.register(r'data', views.TestDataViewSet)
 
