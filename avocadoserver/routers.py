@@ -9,14 +9,21 @@
 #
 # See LICENSE for more details.
 #
-# Copyright: Red Hat Inc. 2014
+# Copyright: Red Hat Inc. 2015
 # Author: Cleber Rosa <cleber@redhat.com>
 
-__all__ = ['MAJOR', 'MINOR', 'RELEASE', 'VERSION']
+from rest_framework import routers
+from rest_framework_nested import routers as nested_routers
 
 
-MAJOR = 0
-MINOR = 2
-RELEASE = 0
+class DefaultRouter(nested_routers.SimpleRouter, routers.DefaultRouter):
 
-VERSION = "%s.%s.%s" % (MAJOR, MINOR, RELEASE)
+    """
+    Router that combines nested and API root capabilities
+
+    The first big chunk of functionality is the ability to nest multiple
+    routers, from `rest_framework_nested`, but these routers lack the
+    so called API Root feature, which the `rest_framework` has in its
+    `DefaultRouter`.
+    """
+    pass
