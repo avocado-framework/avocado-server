@@ -4,6 +4,7 @@ future this will provision the server, and shut it down after the test has been
 run.
 """
 
+from avocado import job
 from avocado import test
 
 import json
@@ -260,3 +261,6 @@ class api(test.Test):
         self.test_jobs_add()
         self.test_jobs_del()
         self.test_jobs_activities_empty()
+
+if __name__ == '__main__':
+    job.main()
