@@ -74,11 +74,11 @@ class ModelsUnitests(unittest.TestCase):
 
     def test_job_unnamed(self):
         job = models.Job.objects.create(timeout=100)
-        self.assertIsNone(job.name)
+        self.assertEquals(job.name, None)
 
     def test_job_automatic_id(self):
         job = models.Job.objects.create()
-        self.assertIsNotNone(job.id)
+        self.assertNotEquals(job.id, None)
 
     def test_job_automatic_id_len_40(self):
         job = models.Job.objects.create()
