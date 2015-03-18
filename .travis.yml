@@ -1,6 +1,7 @@
 language: python
 python:
     - "2.7"
+    - "2.6"
 
 branches:
     only:
@@ -10,6 +11,7 @@ install:
     - pip install sphinx tox simplejson pylint autopep8
     - pip install inspektor
     - pip install -r requirements.txt
+    - if [ $TRAVIS_PYTHON_VERSION == '2.6' ]; then pip install -r requirements-python26.txt; fi
 
 script:
     - ./selftests/runtests.py -c .nose.cfg
