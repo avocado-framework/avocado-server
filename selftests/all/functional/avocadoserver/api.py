@@ -23,26 +23,26 @@ class api(test.Test):
                       'password': '123'}
 
     def get(self, path, status_code=200):
-        response = requests.get(self.params.base_url + path,
-                                auth=(self.params.username,
-                                      self.params.password))
+        response = requests.get(self.params.get('base_url') + path,
+                                auth=(self.params.get('username'),
+                                      self.params.get('password')))
         if status_code is not None:
             self.assertEquals(response.status_code, status_code)
         return response
 
     def post(self, path, data, status_code=201):
-        response = requests.post(self.params.base_url + path,
-                                 auth=(self.params.username,
-                                       self.params.password),
+        response = requests.post(self.params.get('base_url') + path,
+                                 auth=(self.params.get('username'),
+                                       self.params.get('password')),
                                  data=data)
         if status_code is not None:
             self.assertEquals(response.status_code, status_code)
         return response
 
     def delete(self, path):
-        return requests.delete(self.params.base_url + path,
-                               auth=(self.params.username,
-                                     self.params.password))
+        return requests.delete(self.params.get('base_url') + path,
+                               auth=(self.params.get('username'),
+                                     self.params.get('password')))
 
     def test_version(self):
         self.log.info('Testing that the server returns its version')
@@ -190,9 +190,9 @@ class api(test.Test):
         # Help the the server request parser by telling it we'll be
         # using json and not, say, form encoded data
         headers = {'content-type': 'application/json'}
-        response = requests.post(self.params.base_url + path,
-                                 auth=(self.params.username,
-                                       self.params.password),
+        response = requests.post(self.params.get('base_url') + path,
+                                 auth=(self.params.get('username'),
+                                       self.params.get('password')),
                                  headers=headers,
                                  data=data)
         self.assertEquals(response.status_code, 201)
