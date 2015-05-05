@@ -4,8 +4,8 @@ future this will provision the server, and shut it down after the test has been
 run.
 """
 
-from avocado import job
 from avocado import test
+from avocado import main
 
 import json
 import requests
@@ -242,25 +242,5 @@ class api(test.Test):
         self.assertEquals(activities.json(), self.EMPTY_RESPONSE)
         self.test_jobs_del()
 
-    def action(self):
-        self.test_version()
-        self.test_jobstatus_list()
-        self.test_jobstatus_noadd()
-        self.test_teststatus_list()
-        self.test_teststatus_noadd()
-        self.test_softwarecomponentkind_list()
-        self.test_softwarecomponentarch_list()
-        self.test_softwarecomponent_list()
-        self.test_softwarecomponent_add()
-        self.test_linuxdistro_list()
-        self.test_linuxdistro_add()
-        self.test_linuxdistro_no_add_dup()
-        self.test_testenvironment_empty()
-        self.test_testenvironment_add()
-        self.test_jobs_empty()
-        self.test_jobs_add()
-        self.test_jobs_del()
-        self.test_jobs_activities_empty()
-
 if __name__ == '__main__':
-    job.main()
+    main()
