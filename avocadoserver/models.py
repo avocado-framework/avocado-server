@@ -68,6 +68,7 @@ class Job(models.Model):
     id = models.CharField(max_length=40, unique=True, blank=False, primary_key=True,
                           default=create_unique_job_id)
     name = models.CharField(max_length=255, unique=False, blank=True, null=True)
+    time = models.DateTimeField(auto_now_add=True)
     timeout = models.PositiveIntegerField(default=0)
     priority = models.ForeignKey(JobPriority, null=True, blank=True)
     status = models.ForeignKey(JobStatus, null=True, blank=True)
@@ -77,6 +78,9 @@ class Job(models.Model):
             return "%s (%s)" % (self.id, self.name)
         else:
             return self.id
+
+    class Meta:
+        ordering = ("time", )
 
 
 class JobActivity(models.Model):
