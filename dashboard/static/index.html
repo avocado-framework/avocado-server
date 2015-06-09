@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Avocado Dashboard</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="media/css/bootstrap.min.css" rel="stylesheet">
+    <link href="media/css/dashboard.css" rel="stylesheet">
+    <link href="media/css/dataTables.bootstrap.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Avocado Dashboard</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+
+            <div class="col-sm-3 col-md-1 sidebar">
+                <ul class="nav nav-sidebar">
+                    <li><a href="#overview">Overview</a></li>
+                    <li><a href="#jobs">Job Results</a></li>
+                </ul>
+            </div>
+
+            <div class="col-sm-9 col-sm-offset-3 col-md-11 col-md-offset-1 main">
+
+                <div class="alert alert-info alert-dismisible" role="alert" style="display: none;" id="info">
+                    <a href="#" class="close" data-dismiss="alert">&times;</a>
+                </div>
+
+                <div class="alert alert-danger alert-dismissible" role="alert" style="display: none;" id="errors">
+                    <a href="#" class="close" data-dismiss="alert">&times;</a>
+                </div>
+
+                <h1 class="sub-header" id="overview">Overview</h1>
+
+                <div class="row placeholders">
+                    <div class="col-xs-6 col-sm-3 placeholder">
+                        <div id="canvas-holder-last" class="img-responsive">
+                          <canvas id="chart-area-last" width="200" height="200"></canvas>
+                        </div>
+                        <h4>Test Statistics</h4>
+                        <span class="text-muted">From the last job submitted</span>
+                </div>
+                <div class="col-xs-6 col-sm-3 placeholder">
+                        <div id="canvas-holder-jobs" class="img-responsive">
+                          <canvas id="chart-area-jobs" width="200" height="200"></canvas>
+                        </div>
+                        <h4>Jobs Statistics</h4>
+                        <span class="text-muted">From the total of jobs submitted</span>
+                    </div>
+                <div class="col-xs-6 col-sm-6 placeholder">
+                        <div id="canvas-holder-trend">
+                          <canvas id="chart-area-trend" width="600" height="200"></canvas>
+                        </div>
+                        <h4>Job Trend</h4>
+                        <span class="text-muted">From the last 10 jobs submitted</span>
+                    </div>
+                </div>
+
+                <h2 class="sub-header" id="jobs">Job Results</h2>
+                <div class="table-responsive">
+                    <table class="table table-striped" id="results">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th>Status</th>
+                                <th>Tests</th>
+                                <th>Elapsed Time</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <hr>
+                <p class="text-muted">Avocado is a set of tools and libraries to help with automated testing.  One can call it a test framework with benefits. For more information, read <a href="http://avocado-framework.readthedocs.org/">the documentation</a> or visit <a href="https://github.com/avocado-framework/avocado">the project site</a> on GitHub.</p>
+            </div>
+        </div>
+    </div>
+    <script src="media/js/jquery.min.js"></script>
+    <script src="media/js/bootstrap.min.js"></script>
+    <script src="media/js/jquery.dataTables.min.js"></script>
+    <script src="media/js/Chart.min.js"></script>
+    <script src="media/js/dataTables.bootstrap.min.js"></script>
+    <script src="media/js/avocado.js"></script>
+    <script src="media/js/avocadoDashboard.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            avocadoDashboard.init();
+            avocadoDashboard.version();
+            avocadoDashboard.syncJobs();
+            avocadoDashboard.syncOverview();
+        });
+    </script>
+</body>
+
+</html>
