@@ -75,30 +75,6 @@
 		"description": "Test generated warnings"}},
 
     {"pk": "1",
-     "model": "avocadoserver.jobpriority",
-     "fields": {"name": "LOW",
-		"description": "Low priority",
-		"priority": 1}},
-
-    {"pk": "2",
-     "model": "avocadoserver.jobpriority",
-     "fields": {"name": "MEDIUM",
-		"description": "Medium priority",
-		"priority": 2}},
-
-    {"pk": "3",
-     "model": "avocadoserver.jobpriority",
-     "fields": {"name": "HIGH",
-		"description": "High priority",
-		"priority": 3}},
-
-    {"pk": "4",
-     "model": "avocadoserver.jobpriority",
-     "fields": {"name": "URGENT",
-		"description": "Urgent priority",
-		"priority": 4}},
-
-    {"pk": "1",
      "model": "avocadoserver.linuxdistro",
      "fields": {"name": "unknown",
 		"version": "0",

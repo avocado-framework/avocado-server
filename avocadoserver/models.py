@@ -47,15 +47,6 @@ class JobStatus(ReadOnlyModel):
         return self.name
 
 
-class JobPriority(ReadOnlyModel):
-    name = models.CharField(max_length=255, unique=True, blank=False)
-    priority = models.SmallIntegerField(unique=True, blank=False)
-    description = models.TextField(blank=True)
-
-    def __unicode__(self):
-        return self.name
-
-
 class TestStatus(ReadOnlyModel):
     name = models.CharField(max_length=255, unique=True, blank=False)
     description = models.TextField(blank=True)
@@ -70,7 +61,6 @@ class Job(models.Model):
     description = models.CharField(max_length=255, unique=False, blank=True, null=True)
     time = models.DateTimeField(auto_now_add=True)
     timeout = models.PositiveIntegerField(default=0)
-    priority = models.ForeignKey(JobPriority, null=True, blank=True)
     status = models.ForeignKey(JobStatus, null=True, blank=True)
 
     def __unicode__(self):
