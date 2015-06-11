@@ -60,7 +60,7 @@ class Job(models.Model):
                           default=create_unique_job_id)
     description = models.CharField(max_length=255, unique=False, blank=True, null=True)
     time = models.DateTimeField(auto_now_add=True)
-    timeout = models.PositiveIntegerField(default=0)
+    elapsed_time = models.FloatField(default=0.0)
     status = models.ForeignKey(JobStatus, null=True, blank=True)
 
     def __unicode__(self):

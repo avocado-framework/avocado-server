@@ -73,7 +73,7 @@ class ModelsUnitests(unittest.TestCase):
                          models.TestStatus.objects.count())
 
     def test_job_nodescription(self):
-        job = models.Job.objects.create(timeout=100)
+        job = models.Job.objects.create(elapsed_time=100.0)
         self.assertEquals(job.description, None)
 
     def test_job_automatic_id(self):
@@ -84,9 +84,9 @@ class ModelsUnitests(unittest.TestCase):
         job = models.Job.objects.create()
         self.assertEquals(len(job.id), 40)
 
-    def test_job_default_timeout(self):
+    def test_job_default_elapsed_time(self):
         job = models.Job.objects.create()
-        self.assertEquals(job.timeout, 0)
+        self.assertEquals(job.elapsed_time, 0.0)
 
     def test_job_add_same_id(self):
         '''

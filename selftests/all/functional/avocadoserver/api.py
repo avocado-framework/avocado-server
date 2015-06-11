@@ -193,7 +193,7 @@ class api(Test):
         job = {u'id': u'a0a272a09d2edda895bae4d75f5aebfad6562fb0',
                u'name': u'foobar job',
                u'status': 'NOSTATUS',
-               u'timeout': 0,
+               u'elapsed_time': 0.0,
                u'activities': [],
                u'tests': []}
 

@@ -80,7 +80,7 @@ class JobSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Job
-        fields = ('id', 'description', 'time', 'timeout', 'status',
+        fields = ('id', 'description', 'time', 'elapsed_time', 'status',
                   'activities', 'tests')
 
 
