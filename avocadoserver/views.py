@@ -12,13 +12,16 @@
 # Copyright: Red Hat Inc. 2014
 # Author: Cleber Rosa <cleber@redhat.com>
 
-from avocadoserver import models, serializers, permissions
-from avocadoserver.version import VERSION
 from django.http import Http404
+from django.db.models import Q
+
 from rest_framework import viewsets, status, filters
 from rest_framework.response import Response
-from rest_framework.decorators import detail_route
+from rest_framework.decorators import detail_route, list_route
 from rest_framework.decorators import api_view, permission_classes
+
+from avocadoserver import models, serializers, permissions
+from avocadoserver.version import VERSION
 
 
 @api_view(['GET'])
@@ -47,6 +50,15 @@ class JobViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.JobSerializer
     filter_backends = (filters.OrderingFilter,)
     ordering_fields = ('time', 'status', 'elapsed_time', 'description',)
+
+    @list_route()
+    def summary(self, request):
+        total = models.Job.objects.count()
+        passed = models.Job.objects.filter(status__name='PASS').count()
+        failed = models.Job.objects.filter(Q(status__name='FAIL') |
+                                           Q(status__name='ERROR')).count()
+        other = total - (passed + failed)
+        return Response({'passed': passed, 'failed': failed, 'other': other})
 
     @detail_route(methods=['post'])
     def activity(self, request, *args, **kwargs):
