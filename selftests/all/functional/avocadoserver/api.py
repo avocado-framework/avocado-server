@@ -153,12 +153,11 @@ class api(Test):
         distro = r.json()["results"][0]
         self.post(path, distro, 400)
 
-    def test_testenvironment_empty(self):
+    def test_testenvironment_empty_add(self):
         self.log.info('Testing that the server has no test environments')
         r = self.get("/testenvironments/")
         self.assertEquals(r.json(), self.EMPTY_RESPONSE)
 
-    def test_testenvironment_add(self):
         path = "/testenvironments/"
         self.log.info('Testing that the server adds a test environment')
         r = self.get(path)
