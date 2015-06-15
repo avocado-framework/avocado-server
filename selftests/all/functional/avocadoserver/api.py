@@ -4,14 +4,14 @@ future this will provision the server, and shut it down after the test has been
 run.
 """
 
-from avocado import test
+from avocado import Test
 from avocado import main
 
 import json
 import requests
 
 
-class api(test.Test):
+class api(Test):
 
     EMPTY_RESPONSE = {u'count': 0,
                       u'results': [],
