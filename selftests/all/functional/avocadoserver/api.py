@@ -4,14 +4,14 @@ future this will provision the server, and shut it down after the test has been
 run.
 """
 
-from avocado import test
+from avocado import Test
 from avocado import main
 
 import json
 import requests
 
 
-class api(test.Test):
+class api(Test):
 
     EMPTY_RESPONSE = {u'count': 0,
                       u'results': [],
@@ -70,23 +70,6 @@ class api(test.Test):
                       'status')
         data = {"name": "NEW_STATUS"}
         self.post("/jobstatuses/", data, 403)
-
-    def test_jobpriority_list(self):
-        self.log.info('Testing that the server has preloaded job priorities')
-        r = self.get("/jobpriorities/")
-        json = r.json()
-        self.assertEquals(json["count"], 4)
-        names = [d.get("name") for d in json["results"]]
-        self.assertIn("LOW", names)
-        self.assertIn("MEDIUM", names)
-        self.assertIn("HIGH", names)
-        self.assertIn("URGENT", names)
-
-    def test_jobpriority_noadd(self):
-        self.log.info('Testing that the server does not allow adding a new job '
-                      'priority')
-        data = {"name": "NEW_PRIORITY"}
-        self.post("/jobspriority/", data, 403)
 
     def test_teststatus_list(self):
         self.log.info('Testing that the server has preloaded test statuses')
@@ -170,12 +153,11 @@ class api(test.Test):
         distro = r.json()["results"][0]
         self.post(path, distro, 400)
 
-    def test_testenvironment_empty(self):
+    def test_testenvironment_empty_add(self):
         self.log.info('Testing that the server has no test environments')
         r = self.get("/testenvironments/")
         self.assertEquals(r.json(), self.EMPTY_RESPONSE)
 
-    def test_testenvironment_add(self):
         path = "/testenvironments/"
         self.log.info('Testing that the server adds a test environment')
         r = self.get(path)
