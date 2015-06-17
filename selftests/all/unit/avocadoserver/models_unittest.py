@@ -72,9 +72,9 @@ class ModelsUnitests(unittest.TestCase):
         self.assertEqual(count,
                          models.TestStatus.objects.count())
 
-    def test_job_unnamed(self):
-        job = models.Job.objects.create(timeout=100)
-        self.assertEquals(job.name, None)
+    def test_job_nodescription(self):
+        job = models.Job.objects.create(elapsed_time=100.0)
+        self.assertEquals(job.description, None)
 
     def test_job_automatic_id(self):
         job = models.Job.objects.create()
@@ -84,9 +84,9 @@ class ModelsUnitests(unittest.TestCase):
         job = models.Job.objects.create()
         self.assertEquals(len(job.id), 40)
 
-    def test_job_default_timeout(self):
+    def test_job_default_elapsed_time(self):
         job = models.Job.objects.create()
-        self.assertEquals(job.timeout, 0)
+        self.assertEquals(job.elapsed_time, 0.0)
 
     def test_job_add_same_id(self):
         '''
@@ -99,19 +99,19 @@ class ModelsUnitests(unittest.TestCase):
                           models.Job.objects.create,
                           id=job_1.id)
 
-    def test_job_add_same_name(self):
+    def test_job_add_same_description(self):
         '''
-        There are no restrictions on multiple jobs having the same name
+        There are no restrictions on multiple jobs having the same description
         '''
-        job_1 = models.Job.objects.create(name='same')
-        job_2 = models.Job.objects.create(name='same')
-        self.assertEquals(job_1.name, job_2.name)
+        job_1 = models.Job.objects.create(description='same')
+        job_2 = models.Job.objects.create(description='same')
+        self.assertEquals(job_1.description, job_2.description)
 
     def test_job_activity(self):
         '''
         Adds job activity to an existing job
         '''
-        job = models.Job.objects.create(name='job with activities')
+        job = models.Job.objects.create(description='job with activities')
         now = datetime.datetime.utcnow().replace(tzinfo=utc)
         job_setup = models.JobActivity.objects.create(job=job,
                                                       activity='setup',
@@ -125,7 +125,7 @@ class ModelsUnitests(unittest.TestCase):
         '''
         Attempts to add the same activity to the same job
         '''
-        job = models.Job.objects.create(name='job with activities')
+        job = models.Job.objects.create(description='job with activities')
         now = datetime.datetime.utcnow().replace(tzinfo=utc)
         job_setup = models.JobActivity.objects.create(job=job,
                                                       activity='setup',
@@ -135,7 +135,7 @@ class ModelsUnitests(unittest.TestCase):
                           job=job, activity='setup', time=now)
 
     def test_job_add_test_activity(self):
-        job = models.Job.objects.create(name='job with test activities')
+        job = models.Job.objects.create(description='job with test activities')
         test = models.Test.objects.create(job=job,
                                           tag='test.1')
         now = datetime.datetime.utcnow().replace(tzinfo=utc)
@@ -150,7 +150,7 @@ class ModelsUnitests(unittest.TestCase):
             time=now)
 
     def test_job_test_data(self):
-        job = models.Job.objects.create(name='job with test data')
+        job = models.Job.objects.create(description='job with test data')
         test = models.Test.objects.create(job=job,
                                           tag='test.2')
         now = datetime.datetime.utcnow().replace(tzinfo=utc)

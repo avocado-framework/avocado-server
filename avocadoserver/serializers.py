@@ -24,13 +24,6 @@ class JobStatusSerializer(serializers.ModelSerializer):
         fields = ('name', 'description')
 
 
-class JobPrioritySerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = models.JobPriority
-        fields = ('name', 'description')
-
-
 class TestStatusSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -77,10 +70,6 @@ class TestSerializer(serializers.ModelSerializer):
 
 class JobSerializer(serializers.ModelSerializer):
 
-    priority = serializers.SlugRelatedField(
-        slug_field='name',
-        queryset=models.JobPriority.objects.all())
-
     status = serializers.SlugRelatedField(
         slug_field='name',
         queryset=models.JobStatus.objects.all())
@@ -91,7 +80,7 @@ class JobSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Job
-        fields = ('id', 'name', 'timeout', 'priority', 'status',
+        fields = ('id', 'description', 'time', 'elapsed_time', 'status',
                   'activities', 'tests')
 
 

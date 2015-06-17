@@ -47,15 +47,6 @@ class JobStatus(ReadOnlyModel):
         return self.name
 
 
-class JobPriority(ReadOnlyModel):
-    name = models.CharField(max_length=255, unique=True, blank=False)
-    priority = models.SmallIntegerField(unique=True, blank=False)
-    description = models.TextField(blank=True)
-
-    def __unicode__(self):
-        return self.name
-
-
 class TestStatus(ReadOnlyModel):
     name = models.CharField(max_length=255, unique=True, blank=False)
     description = models.TextField(blank=True)
@@ -67,16 +58,19 @@ class TestStatus(ReadOnlyModel):
 class Job(models.Model):
     id = models.CharField(max_length=40, unique=True, blank=False, primary_key=True,
                           default=create_unique_job_id)
-    name = models.CharField(max_length=255, unique=False, blank=True, null=True)
-    timeout = models.PositiveIntegerField(default=0)
-    priority = models.ForeignKey(JobPriority, null=True, blank=True)
+    description = models.CharField(max_length=255, unique=False, blank=True, null=True)
+    time = models.DateTimeField(auto_now_add=True)
+    elapsed_time = models.FloatField(default=0.0)
     status = models.ForeignKey(JobStatus, null=True, blank=True)
 
     def __unicode__(self):
-        if self.name:
-            return "%s (%s)" % (self.id, self.name)
+        if self.description:
+            return "%s (%s)" % (self.id, self.description)
         else:
             return self.id
+
+    class Meta:
+        ordering = ("time", )
 
 
 class JobActivity(models.Model):

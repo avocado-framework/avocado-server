@@ -192,15 +192,13 @@ class api(Test):
         self.log.info('Testing that a new job can be added')
         job = {u'id': u'a0a272a09d2edda895bae4d75f5aebfad6562fb0',
                u'name': u'foobar job',
-               u'priority': 'MEDIUM',
                u'status': 'NOSTATUS',
-               u'timeout': 0,
+               u'elapsed_time': 0.0,
                u'activities': [],
                u'tests': []}
 
         data = {"id": "a0a272a09d2edda895bae4d75f5aebfad6562fb0",
                 "name": "foobar job",
-                "priority": "MEDIUM",
                 "status": "NOSTATUS"}
         r = self.post("/jobs/", data)
         self.assertEquals(r.json(), job)
