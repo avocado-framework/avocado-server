@@ -15,7 +15,7 @@
 from avocadoserver import models, serializers, permissions
 from avocadoserver.version import VERSION
 from django.http import Http404
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, filters
 from rest_framework.response import Response
 from rest_framework.decorators import detail_route
 from rest_framework.decorators import api_view, permission_classes
@@ -45,6 +45,8 @@ class JobStatusViewSet(viewsets.ReadOnlyModelViewSet):
 class JobViewSet(viewsets.ModelViewSet):
     queryset = models.Job.objects.all()
     serializer_class = serializers.JobSerializer
+    filter_backends = (filters.OrderingFilter,)
+    ordering_fields = ('time', 'status', 'elapsed_time', 'description',)
 
     @detail_route(methods=['post'])
     def activity(self, request, *args, **kwargs):
@@ -91,6 +93,8 @@ class JobActivityViewSet(viewsets.ModelViewSet):
 class TestViewSet(viewsets.ModelViewSet):
     queryset = models.Test.objects.all()
     serializer_class = serializers.TestSerializer
+    filter_backends = (filters.OrderingFilter,)
+    ordering_fields = ('tag', 'status',)
 
     def create(self, request, job_pk):
         try:
