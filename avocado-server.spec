@@ -4,7 +4,7 @@
 
 Summary: REST based interface for applications to communicate with the avocado test server
 Name: avocado-server
-Version: 0.2.0
+Version: 0.25.0
 Release: 1%{?dist}
 License: GPLv2
 Group: Development/Tools
@@ -52,6 +52,9 @@ install -p -m 644 data/systemd/%{modulename}.service $RPM_BUILD_ROOT%{_unitdir}/
 %{_unitdir}/%{modulename}.service
 
 %changelog
+* Tue Jun 16 2015 Lucas Meneghel Rodrigues <lmr@redhat.com> - 0.25.0-1
+- Update to upstream version 0.25.0
+
 * Thu May 29 2014 Cleber Rosa <cleber@redhat.com> - 0.2.0-1
 - Release 0.2.0
 
