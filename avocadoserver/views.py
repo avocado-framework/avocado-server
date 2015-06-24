@@ -108,6 +108,18 @@ class TestViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.OrderingFilter,)
     ordering_fields = ('tag', 'status',)
 
+    @list_route()
+    def summary(self, request, job_pk):
+        tests = models.Job.objects.get(pk=job_pk).tests
+        total = tests.count()
+        passed = tests.filter(status__name='PASS').count()
+        failed = tests.filter(Q(status__name='FAIL') |
+                              Q(status__name='ERROR')).count()
+        other = total - (passed + failed)
+        return Response({"passed": passed,
+                         "failed": failed,
+                         "other": other})
+
     def create(self, request, job_pk):
         try:
             job = models.Job.objects.get(pk=job_pk)
