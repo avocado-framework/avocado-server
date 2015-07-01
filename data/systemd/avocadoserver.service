@@ -7,7 +7,7 @@ User=root
 ; The working directory should be a private one, such as /var/lib/avocadoserver
 ; This will be changed when a user/group is introduced
 WorkingDirectory=/var/tmp
-ExecStart=/bin/gunicorn --chdir /var/tmp -u nobody -g nobody -p /var/run/avocadoserver.pid -b 0.0.0.0:9405 avocadoserver.wsgi:application
+ExecStart=/bin/gunicorn --chdir /var/tmp -u avocadoserver -g avocadoserver -p /var/run/avocadoserver.pid -b 0.0.0.0:9405 avocadoserver.wsgi:application
 ExecReload=/bin/kill -s HUP ${MAINPID}
 PrivateTmp=false
 

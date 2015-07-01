@@ -20,6 +20,7 @@ Requires: python-django-rest-framework
 Requires: python-django-rest-framework-nestedrouters
 Requires: python-gunicorn
 Requires: systemd
+Requires(pre): shadow-utils
 
 %description
 avocado-server provides a REST based interface for applications to communicate
@@ -36,6 +37,13 @@ running on other machines, consolidates various job and test results, etc.
 %{__python2} setup.py install --root %{buildroot} --skip-build
 mkdir -p $RPM_BUILD_ROOT%{_unitdir}
 install -p -m 644 data/systemd/%{modulename}.service $RPM_BUILD_ROOT%{_unitdir}/%{modulename}.service
+
+%pre
+getent group avocadoserver >/dev/null || groupadd -r avocadoserver
+getent passwd avocadoserver >/dev/null || \
+    useradd -r -g avocadoserver -d /dev/null -s /sbin/nologin \
+    -c "Avocado Test Result Server" avocadoserver
+exit 0
 
 %post
 %systemd_post %{modulename}.service
