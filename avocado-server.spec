@@ -3,6 +3,7 @@
  %define commit 0f1a6cefc485a64e495e1b4986b4fa0540333234
 %endif
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
+%define avocado_database_dir %{_sharedstatedir}/%{name}/database
 
 Summary: REST based interface for applications to communicate with the avocado test server
 Name: avocado-server
@@ -36,6 +37,7 @@ running on other machines, consolidates various job and test results, etc.
 %install
 %{__python2} setup.py install --root %{buildroot} --skip-build
 mkdir -p $RPM_BUILD_ROOT%{_unitdir}
+mkdir -p $RPM_BUILD_ROOT%{avocado_database_dir}
 install -p -m 644 data/systemd/%{modulename}.service $RPM_BUILD_ROOT%{_unitdir}/%{modulename}.service
 
 %pre
@@ -60,6 +62,7 @@ exit 0
 %{python_sitelib}/%{modulename}-*.egg-info
 %{_bindir}/avocado-server-manage
 %{_unitdir}/%{modulename}.service
+%attr(770, avocadoserver, avocadoserver) %dir %{avocado_database_dir}
 
 %changelog
 * Mon Jun 29 2015 Cleber Rosa <cleber@redhat.com> - 0.25.0-2
