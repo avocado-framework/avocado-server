@@ -1,5 +1,7 @@
 %global modulename avocadoserver
-%global commit 9edb1469ec70a5553aedb613dfd9ffbea4e0f6c6
+%if ! 0%{?commit:1}
+ %define commit 0f1a6cefc485a64e495e1b4986b4fa0540333234
+%endif
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 
 Summary: REST based interface for applications to communicate with the avocado test server
