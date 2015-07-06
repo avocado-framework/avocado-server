@@ -4,6 +4,7 @@
 %endif
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 %define avocado_database_dir %{_sharedstatedir}/%{name}/database
+%define avocado_dashboard_dir %{_datadir}/%{name}/dashboard
 
 Summary: REST based interface for applications to communicate with the avocado test server
 Name: avocado-server
@@ -31,6 +32,8 @@ running on other machines, consolidates various job and test results, etc.
 
 %prep
 %setup -q -n %{name}-%{commit}
+mv dashboard/README.rst README-dashboard.rst
+mv dashboard/LICENSE LICENSE-dashboard
 
 %build
 %{__python2} setup.py build
@@ -39,6 +42,8 @@ running on other machines, consolidates various job and test results, etc.
 %{__python2} setup.py install --root %{buildroot} --skip-build
 mkdir -p $RPM_BUILD_ROOT%{_unitdir}
 mkdir -p $RPM_BUILD_ROOT%{avocado_database_dir}
+mkdir -p $RPM_BUILD_ROOT%{avocado_dashboard_dir}
+cp -r dashboard/static/* $RPM_BUILD_ROOT%{avocado_dashboard_dir}
 install -p -m 644 data/systemd/%{modulename}.service $RPM_BUILD_ROOT%{_unitdir}/%{modulename}.service
 
 %pre
@@ -58,16 +63,18 @@ exit 0
 %systemd_postun
 
 %files
-%doc README.rst LICENSE
+%doc README.rst LICENSE README-dashboard.rst LICENSE-dashboard
 %{python_sitelib}/%{modulename}
 %{python_sitelib}/%{modulename}-*.egg-info
 %{_bindir}/avocado-server-manage
 %{_unitdir}/%{modulename}.service
 %attr(770, avocadoserver, avocadoserver) %dir %{avocado_database_dir}
+%{avocado_dashboard_dir}
 
 %changelog
 * Mon Jul  6 2015 Cleber Rosa <cleber@redhat.com> - 0.25.0-3
 - Add python-dj-static requirement
+- Add dashboard static files
 
 * Mon Jun 29 2015 Cleber Rosa <cleber@redhat.com> - 0.25.0-2
 - Update python-django-rest-framework package names
