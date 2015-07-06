@@ -8,7 +8,7 @@
 Summary: REST based interface for applications to communicate with the avocado test server
 Name: avocado-server
 Version: 0.25.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: GPLv2
 Group: Development/Tools
 URL: http://avocado-framework.readthedocs.org/
@@ -19,6 +19,7 @@ BuildRequires: systemd
 Requires: python
 Requires: python-django-rest-framework
 Requires: python-django-rest-framework-nestedrouters
+Requires: python-dj-static
 Requires: python-gunicorn
 Requires: systemd
 Requires(pre): shadow-utils
@@ -65,6 +66,9 @@ exit 0
 %attr(770, avocadoserver, avocadoserver) %dir %{avocado_database_dir}
 
 %changelog
+* Mon Jul  6 2015 Cleber Rosa <cleber@redhat.com> - 0.25.0-3
+- Add python-dj-static requirement
+
 * Mon Jun 29 2015 Cleber Rosa <cleber@redhat.com> - 0.25.0-2
 - Update python-django-rest-framework package names
 
