@@ -8,8 +8,8 @@
 
 Summary: REST based interface for applications to communicate with the avocado test server
 Name: avocado-server
-Version: 0.25.0
-Release: 3%{?dist}
+Version: 0.26.0
+Release: 1%{?dist}
 License: GPLv2
 Group: Development/Tools
 URL: http://avocado-framework.readthedocs.org/
@@ -72,6 +72,9 @@ exit 0
 %{avocado_dashboard_dir}
 
 %changelog
+* Mon Jul  6 2015 Cleber Rosa <cleber@redhat.com> - 0.26.0-1
+- Update to upstream version 0.26.0
+
 * Mon Jul  6 2015 Cleber Rosa <cleber@redhat.com> - 0.25.0-3
 - Add python-dj-static requirement
 - Add dashboard static files
