@@ -1,6 +1,6 @@
 %global modulename avocadoserver
 %if ! 0%{?commit:1}
- %define commit 0f1a6cefc485a64e495e1b4986b4fa0540333234
+ %define commit 2b69175c21f6e77068eb53c7d78c20a149fd0c97
 %endif
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 %define avocado_database_dir %{_sharedstatedir}/%{name}/database
