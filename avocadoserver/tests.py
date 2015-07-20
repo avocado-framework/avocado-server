@@ -15,33 +15,18 @@
 # Author: Cleber Rosa <cleber@redhat.com>
 
 
-import os
-import sys
-import unittest
 import datetime
 
 import django.db
+import django.test
 from django.utils.timezone import utc
 
-# simple magic for using scripts within a source tree
-basedir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-basedir = os.path.dirname(basedir)
-if os.path.isdir(os.path.join(basedir, 'avocadoserver')):
-    sys.path.append(basedir)
-
-
-from avocadoserver import unittest_utils
-unittest_utils.django_environment()
-unittest_utils.django_db_environment()
 from avocadoserver import models
 
 
-class ModelsUnitests(unittest.TestCase):
+class ModelsJobStatusTests(django.test.TestCase):
 
-    def setUp(self):
-        unittest_utils.django_syncdb()
-
-    def test_jobstatus_cannot_be_created(self):
+    def test_cannot_be_created(self):
         '''
         Tests that a new job status can not be added programmatically
 
@@ -58,7 +43,10 @@ class ModelsUnitests(unittest.TestCase):
         self.assertEqual(count,
                          models.JobStatus.objects.count())
 
-    def test_teststatus_cannot_be_removed(self):
+
+class ModelsTestStatusTests(django.test.TestCase):
+
+    def test_cannot_be_removed(self):
         '''
         Tests that a new test status can not be removed programmatically
 
@@ -72,23 +60,26 @@ class ModelsUnitests(unittest.TestCase):
         self.assertEqual(count,
                          models.TestStatus.objects.count())
 
-    def test_job_nodescription(self):
+
+class ModelsJobTests(django.test.TestCase):
+
+    def test_nodescription(self):
         job = models.Job.objects.create(elapsed_time=100.0)
         self.assertEquals(job.description, None)
 
-    def test_job_automatic_id(self):
+    def test_automatic_id(self):
         job = models.Job.objects.create()
         self.assertNotEquals(job.id, None)
 
-    def test_job_automatic_id_len_40(self):
+    def test_automatic_id_len_40(self):
         job = models.Job.objects.create()
         self.assertEquals(len(job.id), 40)
 
-    def test_job_default_elapsed_time(self):
+    def test_default_elapsed_time(self):
         job = models.Job.objects.create()
         self.assertEquals(job.elapsed_time, 0.0)
 
-    def test_job_add_same_id(self):
+    def test_add_same_id(self):
         '''
         Attempts to create two jobs with the same unique identification
 
@@ -99,7 +90,7 @@ class ModelsUnitests(unittest.TestCase):
                           models.Job.objects.create,
                           id=job_1.id)
 
-    def test_job_add_same_description(self):
+    def test_add_same_description(self):
         '''
         There are no restrictions on multiple jobs having the same description
         '''
@@ -107,7 +98,7 @@ class ModelsUnitests(unittest.TestCase):
         job_2 = models.Job.objects.create(description='same')
         self.assertEquals(job_1.description, job_2.description)
 
-    def test_job_activity(self):
+    def test_activity(self):
         '''
         Adds job activity to an existing job
         '''
@@ -121,7 +112,7 @@ class ModelsUnitests(unittest.TestCase):
                                                         activity='cleanup',
                                                         time=now)
 
-    def test_job_same_activity(self):
+    def test_same_activity(self):
         '''
         Attempts to add the same activity to the same job
         '''
@@ -134,7 +125,7 @@ class ModelsUnitests(unittest.TestCase):
                           models.JobActivity.objects.create,
                           job=job, activity='setup', time=now)
 
-    def test_job_add_test_activity(self):
+    def test_add_test_activity(self):
         job = models.Job.objects.create(description='job with test activities')
         test = models.Test.objects.create(job=job,
                                           tag='test.1')
@@ -149,7 +140,7 @@ class ModelsUnitests(unittest.TestCase):
             activity='SETUP_END',
             time=now)
 
-    def test_job_test_data(self):
+    def test_test_data(self):
         job = models.Job.objects.create(description='job with test data')
         test = models.Test.objects.create(job=job,
                                           tag='test.2')
@@ -164,14 +155,18 @@ class ModelsUnitests(unittest.TestCase):
                    'vconsole.font=latarcyrheb-sun16 rd.lvm.lv=vg_x220/swap '
                    'rhgb quiet LANG=en_US.UTF-8'))
 
-    def test_sofware_component_kind_create_delete(self):
+
+class ModelsSoftwareComponentKindTests(django.test.TestCase):
+
+    def test_create_delete(self):
         models.SoftwareComponentKind.objects.create(name='rpm')
         self.assertEqual(2, models.SoftwareComponentKind.objects.all().count())
 
         models.SoftwareComponentKind.objects.all().delete()
         self.assertEqual(0, models.SoftwareComponentKind.objects.all().count())
 
-    def test_software_component_kind_create_duplicate(self):
+    def test_create_duplicate(self):
+        @django.db.transaction.atomic
         def create_kind():
             models.SoftwareComponentKind.objects.create(name='rpm')
 
@@ -179,14 +174,18 @@ class ModelsUnitests(unittest.TestCase):
         self.assertRaises(django.db.IntegrityError, create_kind)
         models.SoftwareComponentKind.objects.all().delete()
 
-    def test_software_component_arch_create_delete(self):
+
+class ModelsSoftwareComponentArchTests(django.test.TestCase):
+
+    def test_create_delete(self):
         models.SoftwareComponentArch.objects.create(name='x86_64')
         self.assertEqual(2, models.SoftwareComponentArch.objects.all().count())
 
         models.SoftwareComponentArch.objects.all().delete()
         self.assertEqual(0, models.SoftwareComponentArch.objects.all().count())
 
-    def test_software_component_arch_create_duplicate(self):
+    def test_create_duplicate(self):
+        @django.db.transaction.atomic
         def create_arch():
             models.SoftwareComponentArch.objects.create(name='x86_64')
 
@@ -194,7 +193,10 @@ class ModelsUnitests(unittest.TestCase):
         self.assertRaises(django.db.IntegrityError, create_arch)
         models.SoftwareComponentArch.objects.all().delete()
 
-    def test_software_component_delete_reference(self):
+
+class ModelsSoftwareComponentTests(django.test.TestCase):
+
+    def test_delete_reference(self):
         '''
         Should not be possible to delete a Software Component Arch that
         is referenced by an existing Software Component
@@ -225,7 +227,10 @@ class ModelsUnitests(unittest.TestCase):
         models.SoftwareComponentKind.objects.all().delete()
         models.SoftwareComponentArch.objects.all().delete()
 
-    def test_distro_create_delete(self):
+
+class ModelsDistroTests(django.test.TestCase):
+
+    def test_create_delete(self):
         # The builtin 'unknown distro' accounts for the first count
         self.assertEqual(1, models.LinuxDistro.objects.all().count())
 
@@ -237,7 +242,7 @@ class ModelsUnitests(unittest.TestCase):
         models.LinuxDistro.objects.all().delete()
         self.assertEqual(0, models.LinuxDistro.objects.all().count())
 
-    def test_distro_create_query_arch_delete(self):
+    def test_create_query_arch_delete(self):
         models.LinuxDistro.objects.create(name='distro', version='1',
                                           release='0', arch='i386')
         models.LinuxDistro.objects.create(name='distro', version='1',
@@ -259,14 +264,10 @@ class ModelsUnitests(unittest.TestCase):
         self.assertEqual(3, models.LinuxDistro.objects.all().count())
 
     def test_distro_create_duplicate(self):
+        @django.db.transaction.atomic
         def create_distro():
             models.LinuxDistro.objects.create(name='distro', version='1',
                                               release='0', arch='i386')
-
         create_distro()
         self.assertRaises(django.db.IntegrityError, create_distro)
         models.LinuxDistro.objects.all().delete()
-
-
-if __name__ == '__main__':
-    unittest.main()
