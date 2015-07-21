@@ -558,3 +558,29 @@ class ApiJobsTests(rest_framework.test.APITestCase):
         delete_response = self.client.delete(path)
         self.assertEquals(delete_response.status_code,
                           rest_framework.status.HTTP_204_NO_CONTENT)
+
+    def test_get_conflict(self):
+        '''
+        Tests that a partial and non unique job id will respond as a conflict
+        '''
+        job1 = {"id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "description": "foobar job",
+                "status": "NOSTATUS"}
+        job1_response = self.client.post("/jobs/", job1)
+        self.assertEquals(job1_response.status_code,
+                          rest_framework.status.HTTP_201_CREATED)
+
+        job2 = {"id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab",
+                "description": "foobar job",
+                "status": "NOSTATUS"}
+        job2_response = self.client.post("/jobs/", job2)
+        self.assertEquals(job2_response.status_code,
+                          rest_framework.status.HTTP_201_CREATED)
+
+        good_response = self.client.get('/jobs/' + (40 * 'a') + '/')
+        self.assertEquals(good_response.status_code,
+                          rest_framework.status.HTTP_200_OK)
+
+        conflict_response = self.client.get('/jobs/' + (39 * 'a') + '/')
+        self.assertEquals(conflict_response.status_code,
+                          rest_framework.status.HTTP_409_CONFLICT)

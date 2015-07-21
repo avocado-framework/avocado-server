@@ -13,17 +13,34 @@
 # Author: Cleber Rosa <cleber@redhat.com>
 
 from django.http import Http404
+from django.utils import six
 from django.db.models import Q
+from django.core.exceptions import MultipleObjectsReturned
+from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import viewsets, status, filters
 from rest_framework.response import Response
 from rest_framework.decorators import detail_route, list_route
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.views import exception_handler as _exception_handler
 
 from . import models
 from . import serializers
 from . import permissions
 from .version import VERSION
+
+
+class Http409(Exception):
+    pass
+
+
+def exception_handler(exc, context):
+    if isinstance(exc, Http409):
+        msg = _('Conflict.')
+        data = {'detail': six.text_type(msg)}
+        return Response(data, status=status.HTTP_409_CONFLICT)
+    else:
+        return _exception_handler(exc, context)
 
 
 @api_view(['GET'])
@@ -52,6 +69,16 @@ class JobViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.JobSerializer
     filter_backends = (filters.OrderingFilter,)
     ordering_fields = ('time', 'status', 'elapsed_time', 'description',)
+
+    def get_object(self):
+        try:
+            obj = models.Job.objects.get(pk=self.kwargs['pk'])
+            if obj is None:
+                raise Http404
+            else:
+                return obj
+        except MultipleObjectsReturned:
+            raise Http409
 
     @list_route()
     def summary(self, request):
