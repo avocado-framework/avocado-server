@@ -79,6 +79,14 @@ class ModelsJobTests(django.test.TestCase):
         job = models.Job.objects.create()
         self.assertEquals(len(job.id), 40)
 
+    def test_get_short(self):
+        job_id = 'e727556485a5fe6965d5bf759a050555213c4c57'
+        job = models.Job.objects.create(id=job_id)
+        self.assertEquals(job.id, job_id)
+        for length in xrange(6, 40):
+            job = models.Job.objects.get(id=job_id[0:length])
+            self.assertEquals(job.id, job_id)
+
     def test_default_elapsed_time(self):
         job = models.Job.objects.create()
         self.assertEquals(job.elapsed_time, 0.0)
