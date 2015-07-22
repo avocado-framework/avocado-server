@@ -8,8 +8,7 @@ branches:
         - master
 
 install:
-    - pip install sphinx tox simplejson pylint autopep8
-    - pip install inspektor
+    - pip install inspektor pylint autopep8
     - pip install -r requirements.txt
     - if [ $TRAVIS_PYTHON_VERSION == '2.6' ]; then pip install -r requirements-python26.txt; fi
 
