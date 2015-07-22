@@ -20,8 +20,10 @@ from rest_framework.response import Response
 from rest_framework.decorators import detail_route, list_route
 from rest_framework.decorators import api_view, permission_classes
 
-from avocadoserver import models, serializers, permissions
-from avocadoserver.version import VERSION
+from . import models
+from . import serializers
+from . import permissions
+from .version import VERSION
 
 
 @api_view(['GET'])

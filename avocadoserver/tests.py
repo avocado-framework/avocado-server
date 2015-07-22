@@ -21,7 +21,7 @@ import django.db
 import django.test
 from django.utils.timezone import utc
 
-from avocadoserver import models
+from . import models
 
 
 class ModelsJobStatusTests(django.test.TestCase):

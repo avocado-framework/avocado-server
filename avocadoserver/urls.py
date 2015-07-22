@@ -13,9 +13,10 @@
 # Author: Cleber Rosa <cleber@redhat.com>
 
 from django.conf.urls import patterns, include, url
-from avocadoserver import routers
 from rest_framework_nested import routers as nested
-import views
+
+from . import routers
+from . import views
 
 router = routers.DefaultRouter()
 router.register(r'jobstatuses', views.JobStatusViewSet)

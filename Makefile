@@ -46,3 +46,4 @@ rpm-release: srpm-release
 
 check:
 	./scripts/avocado-server-manage test
+	./selftests/modules_boundaries
