@@ -14,6 +14,7 @@ install:
     - if [ $TRAVIS_PYTHON_VERSION == '2.6' ]; then pip install -r requirements-python26.txt; fi
 
 script:
-    - ./scripts/avocado-server-manage test avocadoserver
+    - ./scripts/avocado-server-manage test
+    - ./selftests/modules_boundaries
     - inspekt lint
     - inspekt style
