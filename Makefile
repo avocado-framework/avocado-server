@@ -43,3 +43,6 @@ srpm-release: source-release
 rpm-release: srpm-release
 	if test ! -d BUILD/RPM; then mkdir -p BUILD/RPM; fi
 	mock --resultdir BUILD/RPM -D "commit $(RELEASE_COMMIT)" --rebuild BUILD/SRPM/avocado-server-$(VERSION)-*.src.rpm
+
+check:
+	./scripts/avocado-server-manage test
