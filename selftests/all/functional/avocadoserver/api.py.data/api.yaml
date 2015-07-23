@@ -1,4 +1,0 @@
-local:
-    base_url: http://127.0.0.1:9405
-    username: admin
-    password: 123

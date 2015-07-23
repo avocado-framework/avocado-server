@@ -20,8 +20,12 @@ import datetime
 import django.db
 import django.test
 from django.utils.timezone import utc
+import rest_framework.status
+import rest_framework.test
 
 from . import models
+from . import views
+from . version import VERSION
 
 
 class ModelsJobStatusTests(django.test.TestCase):
@@ -271,3 +275,278 @@ class ModelsDistroTests(django.test.TestCase):
         create_distro()
         self.assertRaises(django.db.IntegrityError, create_distro)
         models.LinuxDistro.objects.all().delete()
+
+
+class ApiVersionTests(rest_framework.test.APITestCase):
+
+    def test_get(self):
+        '''
+        Tests that the server returns its version
+        '''
+        response = self.client.get("/version/")
+        self.assertEquals(response.status_code,
+                          rest_framework.status.HTTP_200_OK)
+        self.assertEquals(response.data, {"version": VERSION})
+
+
+class ApiJobStatusTests(rest_framework.test.APITestCase):
+
+    def test_get(self):
+        '''
+        Tests that the server has preloaded job statuses
+        '''
+        response = self.client.get("/jobstatuses/")
+        self.assertEquals(response.status_code,
+                          rest_framework.status.HTTP_200_OK)
+        self.assertEquals(response.data["count"], 10)
+        names = [d.get("name") for d in response.data["results"]]
+        self.assertIn("TEST_NA", names)
+        self.assertIn("ABORT", names)
+        self.assertIn("ERROR", names)
+        self.assertIn("FAIL", names)
+        self.assertIn("WARN", names)
+        self.assertIn("PASS", names)
+        self.assertIn("START", names)
+        self.assertIn("ALERT", names)
+        self.assertIn("RUNNING", names)
+        self.assertIn("NOSTATUS", names)
+
+    def test_post_noadd(self):
+        '''
+        Tests that the server does not allow adding a new job status
+        '''
+        response = self.client.post("/jobstatuses/", {"name": "NEW_STATUS"})
+        self.assertEquals(response.status_code,
+                          rest_framework.status.HTTP_403_FORBIDDEN)
+
+
+class ApiTestStatusTests(rest_framework.test.APITestCase):
+
+    def test_get(self):
+        '''
+        Tests that the server has preloaded test statuses
+        '''
+        response = self.client.get("/teststatuses/")
+        self.assertEquals(response.status_code,
+                          rest_framework.status.HTTP_200_OK)
+        self.assertEquals(response.data["count"], 5)
+        names = [d.get("name") for d in response.data["results"]]
+        self.assertIn("PASS", names)
+        self.assertIn("ERROR", names)
+        self.assertIn("FAIL", names)
+        self.assertIn("TEST_NA", names)
+        self.assertIn("WARN", names)
+
+    def test_post_noadd(self):
+        '''
+        Tests that the server does not allow adding a new test status
+        '''
+        response = self.client.post("/teststatuses/", {"name": "NEW_STATUS"})
+        self.assertEquals(response.status_code,
+                          rest_framework.status.HTTP_403_FORBIDDEN)
+
+
+class ApiSoftwareComponentKindTests(rest_framework.test.APITestCase):
+
+    def test_get(self):
+        '''
+        Tests that the server has preloaded software component kinds
+        '''
+        response = self.client.get("/softwarecomponentkinds/")
+        self.assertEquals(response.status_code,
+                          rest_framework.status.HTTP_200_OK)
+        self.assertEquals(response.data["count"], 1)
+        names = [d.get("name") for d in response.data["results"]]
+        self.assertIn("unknown", names)
+
+
+class ApiSoftwareComponentArchTests(rest_framework.test.APITestCase):
+
+    def test_get(self):
+        '''
+        Tests that the server has preloaded software component arches
+        '''
+        response = self.client.get("/softwarecomponentarches/")
+        self.assertEquals(response.status_code,
+                          rest_framework.status.HTTP_200_OK)
+        self.assertEquals(response.data["count"], 1)
+        names = [d.get("name") for d in response.data["results"]]
+        self.assertIn("unknown", names)
+
+
+class ApiSoftwareComponentTests(rest_framework.test.APITestCase):
+
+    def test_get(self):
+        '''
+        Tests that the server responds to software component listing
+        '''
+        response = self.client.get("/softwarecomponents/")
+        self.assertEquals(response.status_code,
+                          rest_framework.status.HTTP_200_OK)
+
+    def test_post(self):
+        '''
+        Tests that the server adds a software component
+        '''
+        path = "/softwarecomponents/"
+        first_response = self.client.get(path)
+        self.assertEquals(first_response.status_code,
+                          rest_framework.status.HTTP_200_OK)
+
+        data = {"kind": "unknown",
+                "arch": "unknown",
+                "name": "foobar",
+                "version": "1.0",
+                "release": "0",
+                "checksum": "0"}
+        post_response = self.client.post(path, data)
+        self.assertEquals(post_response.status_code,
+                          rest_framework.status.HTTP_201_CREATED)
+        self.assertEquals(post_response.data, data)
+
+        second_response = self.client.get(path)
+        self.assertEquals(second_response.status_code,
+                          rest_framework.status.HTTP_200_OK)
+        self.assertEquals(second_response.data["count"],
+                          first_response.data["count"] + 1)
+
+
+class ApiLinuxDistroTests(rest_framework.test.APITestCase):
+
+    def test_get(self):
+        '''
+        Tests that the server responds to linux distro listing
+        '''
+        response = self.client.get("/linuxdistros/")
+        self.assertEquals(response.status_code,
+                          rest_framework.status.HTTP_200_OK)
+
+    def test_post(self):
+        '''
+        Tests that the server adds a linux distro
+        '''
+        path = "/linuxdistros/"
+        first_response = self.client.get(path)
+        self.assertEquals(first_response.status_code,
+                          rest_framework.status.HTTP_200_OK)
+
+        data = {"arch": "unknown",
+                "name": "avocadix",
+                "release": "1",
+                "version": "0"}
+        post_response = self.client.post(path, data)
+        self.assertEquals(post_response.status_code,
+                          rest_framework.status.HTTP_201_CREATED)
+        self.assertEquals(post_response.data, data)
+
+        second_response = self.client.get(path)
+        self.assertEquals(second_response.status_code,
+                          rest_framework.status.HTTP_200_OK)
+        self.assertEquals(second_response.data["count"],
+                          first_response.data["count"] + 1)
+
+    def test_post_no_add_dup(self):
+        '''
+        Tests that the server does not add a duplicated linux distro
+        '''
+        path = "/linuxdistros/"
+        first_response = self.client.get(path)
+        self.assertEquals(first_response.status_code,
+                          rest_framework.status.HTTP_200_OK)
+
+        second_response = self.client.post(path, first_response.data)
+        self.assertEquals(second_response.status_code,
+                          rest_framework.status.HTTP_400_BAD_REQUEST)
+
+
+class ApiTestEnvironmentTests(rest_framework.test.APITestCase):
+
+    def test_get(self):
+        '''
+        Tests that the server responds to test environment listing
+        '''
+        response = self.client.get("/testenvironments/")
+        self.assertEquals(response.status_code,
+                          rest_framework.status.HTTP_200_OK)
+
+    def test_post(self):
+        '''
+        Tests that the server adds a test environment
+        '''
+        path = "/testenvironments/"
+        first_response = self.client.get(path)
+        self.assertEquals(first_response.status_code,
+                          rest_framework.status.HTTP_200_OK)
+
+        data = {"distro": {"arch": "unknown",
+                           "name": "unknown",
+                           "release": "0",
+                           "version": "0"},
+                'installed_software_components': []}
+        post_response = self.client.post(path, data, format='json')
+        self.assertEquals(post_response.status_code,
+                          rest_framework.status.HTTP_201_CREATED)
+        self.assertEquals(post_response.data, data)
+
+        second_response = self.client.get(path)
+        self.assertEquals(second_response.status_code,
+                          rest_framework.status.HTTP_200_OK)
+        self.assertEquals(second_response.data["count"],
+                          first_response.data["count"] + 1)
+
+
+class ApiJobsTests(rest_framework.test.APITestCase):
+
+    def test_get(self):
+        '''
+        Tests that the server responds to job listing
+        '''
+        response = self.client.get("/jobs/")
+        self.assertEquals(response.status_code,
+                          rest_framework.status.HTTP_200_OK)
+
+    def test_post(self):
+        '''
+        Tests that a new job can be added
+        '''
+        path = "/jobs/"
+        first_response = self.client.get(path)
+        self.assertEquals(first_response.status_code,
+                          rest_framework.status.HTTP_200_OK)
+
+        data = {"id": "a0a272a09d2edda895bae4d75f5aebfad6562fb0",
+                "description": "foobar job",
+                "status": "NOSTATUS"}
+        post_response = self.client.post("/jobs/", data)
+        self.assertEquals(post_response.status_code,
+                          rest_framework.status.HTTP_201_CREATED)
+        job = {'id': u'a0a272a09d2edda895bae4d75f5aebfad6562fb0',
+               'description': u'foobar job',
+               'status': u'NOSTATUS',
+               'elapsed_time': 0.0,
+               'activities': [],
+               'tests': []}
+        for key in job:
+            self.assertEquals(post_response.data[key], job[key])
+
+        second_response = self.client.get(path)
+        self.assertEquals(second_response.status_code,
+                          rest_framework.status.HTTP_200_OK)
+        self.assertEquals(second_response.data["count"],
+                          first_response.data["count"] + 1)
+
+    def test_del(self):
+        '''
+        Tests that a job can be deleted
+        '''
+        data = {"id": "a0a272a09d2edda895bae4d75f5aebfad6562fb0",
+                "description": "foobar job",
+                "status": "NOSTATUS"}
+        post_response = self.client.post("/jobs/", data)
+        self.assertEquals(post_response.status_code,
+                          rest_framework.status.HTTP_201_CREATED)
+
+        path = "/jobs/" + data['id'] + "/"
+        delete_response = self.client.delete(path)
+        self.assertEquals(delete_response.status_code,
+                          rest_framework.status.HTTP_204_NO_CONTENT)
