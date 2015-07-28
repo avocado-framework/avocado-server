@@ -20,6 +20,21 @@ from django.db import models
 from job_id import create_unique_job_id
 
 
+class JobManager(models.Manager):
+
+    def get(self, *args, **kwargs):
+        '''
+        Allows a job to be fetched by using a subset of the ID
+        '''
+        if 'id' in kwargs:
+            job_id = kwargs.pop('id')
+            kwargs['id__startswith'] = job_id
+        elif 'pk' in kwargs:
+            job_id = kwargs.pop('pk')
+            kwargs['pk__startswith'] = job_id
+        return super(JobManager, self).get(*args, **kwargs)
+
+
 class ReadOnlyModel(models.Model):
 
     """
@@ -62,6 +77,7 @@ class Job(models.Model):
     time = models.DateTimeField(auto_now_add=True)
     elapsed_time = models.FloatField(default=0.0)
     status = models.ForeignKey(JobStatus, null=True, blank=True)
+    objects = JobManager()
 
     def __unicode__(self):
         if self.description:
