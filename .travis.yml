@@ -7,6 +7,8 @@ branches:
     only:
         - master
 
+sudo: false
+
 install:
     - pip install inspektor pylint autopep8
     - pip install -r requirements.txt
