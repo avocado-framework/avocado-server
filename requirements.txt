@@ -6,3 +6,4 @@ djangorestframework==3.1.1
 drf-nested-routers==0.9.0
 gunicorn==18.0
 dj-static==0.0.6
+logutils==0.3.3; python_version < '2.7'
