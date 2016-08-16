@@ -6,4 +6,3 @@ djangorestframework==3.1.1
 drf-nested-routers==0.9.0
 gunicorn==18.0
 dj-static==0.0.6
-inspektor==0.1.16

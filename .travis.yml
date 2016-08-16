@@ -10,8 +10,8 @@ branches:
 sudo: false
 
 install:
-    - pip install inspektor pylint autopep8
     - pip install -r requirements.txt
+    - pip install -r requirements-selftests.txt
     - if [ $TRAVIS_PYTHON_VERSION == '2.6' ]; then pip install -r requirements-python26.txt; fi
 
 script:

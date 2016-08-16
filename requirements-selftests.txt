@@ -1,0 +1,2 @@
+# For code-checking
+inspektor==0.2.2
