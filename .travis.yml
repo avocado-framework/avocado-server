@@ -10,9 +10,8 @@ branches:
 sudo: false
 
 install:
-    - pip install inspektor pylint autopep8
     - pip install -r requirements.txt
-    - if [ $TRAVIS_PYTHON_VERSION == '2.6' ]; then pip install -r requirements-python26.txt; fi
+    - pip install -r requirements-selftests.txt
 
 script:
     - ./scripts/avocado-server-manage test
